@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+    <div class="container">
+
+        <!-- Success Message -->
+        <div class="card border-0 shadow-sm rounded-4 mx-auto mb-4" style="max-width: 950px;">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-check-circle mb-3" style="font-size: 72px; color: #198754;"></i>
+                <h2 class="fw-bold mb-2">Payment Successful</h2>
+                <p class="text-muted mb-4">
+                    Thank you for shopping with <strong>StyleNest</strong>. Your order has been placed successfully.
+                </p>
+                <a href="{% url 'store' %}" class="btn btn-dark btn-lg rounded-3 px-4">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+
+        <!-- Invoice Card -->
+        <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 950px;">
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Header -->
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{% static 'images/logo.png' %}" alt="StyleNest Logo" style="max-height: 45px;">
+                            <div>
+                                <h3 class="mb-0 fw-bold">StyleNest</h3>
+                                <small class="text-muted">Order Confirmation</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 text-md-end">
+                        <h5 class="fw-semibold mb-2">Invoiced To</h5>
+                        <p class="mb-1">{{ order.full_name }}</p>
+                        <p class="mb-1">{{ order.full_address }}</p>
+                        <p class="mb-1">{{ order.city }}, {{ order.state }}</p>
+                        <p class="mb-0">{{ order.country }}</p>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <small class="text-muted d-block">Order Number</small>
+                            <strong>#{{ order_number }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <small class="text-muted d-block">Transaction ID</small>
+                            <strong>{{ transID }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <small class="text-muted d-block">Order Date</small>
+                            <strong>{{ order.created_at }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 bg-light rounded-4 h-100">
+                            <small class="text-muted d-block">Status</small>
+                            <strong>{{ payment.status }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ordered_products %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.product.product_name }}</strong>
+                                    <p class="text-muted small mb-0 mt-1">
+                                        {% if item.variations.all %}
+                                            {% for i in item.variations.all %}
+                                                {{ i.variation_category|capfirst }}: {{ i.variation_value|capfirst }}<br>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </p>
+                                </td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-center">${{ item.product_price }} USD</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2" class="text-end">Sub Total:</th>
+                                <th class="text-center">${{ subtotal }} USD</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" class="text-end">Tax:</th>
+                                <th class="text-center">${{ order.tax }} USD</th>
+                            </tr>
+                            <tr>
+                                <th colspan="2" class="text-end">Grand Total:</th>
+                                <th class="text-center fw-bold">${{ order.order_total }} USD</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center mt-4 pt-3 border-top">
+                    <h6 class="fw-bold mb-2">Thank you for shopping with StyleNest!</h6>
+                    <p class="text-muted mb-0">
+                        Your payment was received successfully and your order is now being processed.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

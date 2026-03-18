@@ -1,0 +1,70 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Verify Your Account - StyleNest</title>
+</head>
+
+<body style="margin:0; padding:0; font-family:Arial; background:#f8f9fa;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="600" style="background:#ffffff; border-radius:10px; overflow:hidden;">
+
+<!-- HEADER -->
+<tr>
+<td style="background:#111; padding:25px; text-align:center;">
+<h1 style="color:#fff; margin:0;">StyleNest</h1>
+<p style="color:#ccc; margin:5px 0;">Find Your Style</p>
+</td>
+</tr>
+
+<!-- BODY -->
+<tr>
+<td style="padding:35px;">
+
+<h2>Hi {{ user.first_name }},</h2>
+
+<p>
+Welcome to <strong>StyleNest</strong> 👗✨<br>
+Please confirm your email to start shopping the latest trends.
+</p>
+
+<div style="text-align:center; margin:30px 0;">
+<a href="http://{{ domain }}{% url 'activate' uidb64=uid token=token %}"
+style="background:#111; color:#fff; padding:12px 25px; text-decoration:none; border-radius:5px;">
+Verify Account
+</a>
+</div>
+
+<p style="font-size:13px; color:#666;">
+If the button doesn’t work, use this link:<br>
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+</p>
+
+<p>If this wasn’t you, ignore this email.</p>
+
+<p><strong>StyleNest Team</strong></p>
+
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td style="background:#f1f1f1; text-align:center; padding:15px; font-size:12px;">
+© 2026 StyleNest
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+{% endautoescape %}
