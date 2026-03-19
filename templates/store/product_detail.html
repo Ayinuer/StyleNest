@@ -2,165 +2,113 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .swatch-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .swatch-item input { position: absolute; opacity: 0; cursor: pointer; }
+    .swatch-visual {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    .swatch-item input:checked ~ .swatch-visual {
+        border-color: #000;
+        transform: scale(1.15);
+        box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+    .swatch-item input:checked ~ .swatch-visual::after {
+        content: '✓';
+        color: #fff;
+        font-size: 12px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-shadow: 0 0 2px #000;
+    }
+</style>
 
-<section class="section-content py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+<section class="section-content py-5" style="background-color: #ffffff; min-height: 100vh;">
     <div class="container">
-
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="row g-0">
-
-                <!-- Product Gallery -->
-                <aside class="col-md-6 bg-white p-4">
-                    <div class="mainImage text-center mb-4">
-                        {% if single_product.images %}
-                            <img
-                                src="{{ single_product.images.url }}"
-                                alt="{{ single_product.product_name }}"
-                                class="img-fluid rounded-4"
-                                style="max-height: 500px; object-fit: cover;"
-                            >
-                        {% else %}
-                            <img
-                                src="{% static 'images/no-image.png' %}"
-                                alt="{{ single_product.product_name }}"
-                                class="img-fluid rounded-4"
-                                style="max-height: 500px; object-fit: cover;"
-                            >
-                        {% endif %}
-                    </div>
-
-                    <div class="d-flex flex-wrap gap-2 justify-content-center thumb">
-                        {% if single_product.images %}
-                            <a href="{{ single_product.images.url }}" class="border rounded-3 p-1 bg-white">
-                                <img
-                                    src="{{ single_product.images.url }}"
-                                    alt="Product Image"
-                                    style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px;"
-                                >
-                            </a>
-                        {% endif %}
-
-                        {% if product_gallery %}
-                            {% for i in product_gallery %}
-                                <a href="{{ i.image.url }}" class="border rounded-3 p-1 bg-white">
-                                    <img
-                                        src="{{ i.image.url }}"
-                                        alt="Product Image"
-                                        style="width: 70px; height: 70px; object-fit: cover; border-radius: 8px;"
-                                    >
-                                </a>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </aside>
-
-                <!-- Product Info -->
-                <main class="col-md-6 bg-white border-start p-4 p-lg-5">
-                    <form action="{% url 'add_cart' single_product.id %}" method="POST">
-                        {% csrf_token %}
-
-                        <h2 class="fw-bold mb-2">{{ single_product.product_name }}</h2>
-
-                        <div class="rating-star mb-3">
-                            <span class="text-muted">
-                                {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
-                            </span>
-                        </div>
-
-                        <div class="mb-3">
-                            <span class="fs-3 fw-bold">£{{ single_product.price|floatformat:2 }}</span>
-                        </div>
-
-                        <p class="text-muted mb-4">{{ single_product.description }}</p>
-
-                        <hr>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Choose Color</label>
-                            <select name="color" class="form-control rounded-3" required>
-                                <option value="" disabled selected>Select color</option>
-                                {% for i in single_product.variation_set.colors %}
-                                    <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
-                                {% empty %}
-                                    <option disabled>No colors available</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">Select Size</label>
-                            <select name="size" class="form-control rounded-3" required>
-                                <option value="" disabled selected>Select size</option>
-                                {% for i in single_product.variation_set.sizes %}
-                                    <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
-                                {% empty %}
-                                    <option disabled>No sizes available</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <hr>
-
-                        {% if single_product.stock <= 0 %}
-                            <div class="alert alert-danger rounded-3 mb-0">
-                                <strong>Out of Stock</strong>
-                            </div>
-                        {% else %}
-                            <button type="submit" class="btn btn-dark btn-lg rounded-3 px-4">
-                                <span class="me-2">Add to Cart</span>
-                            </button>
-                        {% endif %}
-                    </form>
-                </main>
-            </div>
-        </div>
-
-        <!-- Customer Reviews -->
-        <div class="row mt-5">
-            <div class="col-lg-9">
-                {% include 'includes/alerts.html' %}
-
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                            <div>
-                                <h4 class="fw-bold mb-1">Customer Reviews</h4>
-                                <p class="text-muted mb-0">
-                                    {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
-                                </p>
-                            </div>
-                        </div>
-
-                        {% if reviews %}
-                            {% for review in reviews %}
-                                <div class="border rounded-4 p-4 mb-3">
-                                    <div class="d-flex justify-content-between align-items-start flex-wrap">
-                                        <div>
-                                            <h6 class="fw-bold mb-1">
-                                                {% if review.user.full_name %}
-                                                    {{ review.user.full_name }}
-                                                {% else %}
-                                                    {{ review.user.first_name }} {{ review.user.last_name }}
-                                                {% endif %}
-                                            </h6>
-                                        </div>
-
-                                        <span class="text-muted small">{{ review.updated_at }}</span>
-                                    </div>
-
-                                    <h6 class="fw-semibold mt-2">{{ review.subject }}</h6>
-                                    <p class="text-muted mb-0">{{ review.review }}</p>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="text-muted">No reviews yet.</div>
-                        {% endif %}
-                    </div>
+        <div class="row g-5">
+            <aside class="col-md-7">
+                <div class="mainImage mb-3">
+                    {% if single_product.images %}
+                        <img src="{{ single_product.images.url }}" class="img-fluid rounded-0 w-100" style="max-height: 700px; object-fit: cover;">
+                    {% endif %}
                 </div>
-            </div>
-        </div>
+                <div class="d-flex gap-2 overflow-auto pb-2">
+                    {% for i in product_gallery %}
+                        <img src="{{ i.image.url }}" class="rounded-0 border" style="width: 80px; height: 100px; object-fit: cover; cursor: pointer;">
+                    {% endfor %}
+                </div>
+            </aside>
 
+            <main class="col-md-5">
+                <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <nav aria-label="breadcrumb" class="mb-3 small">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-dark text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ single_product.category.get_url }}" class="text-dark text-decoration-none">{{ single_product.category.category_name }}</a></li>
+                        </ol>
+                    </nav>
+
+                    <h1 class="h2 fw-bold text-uppercase mb-1">{{ single_product.product_name }}</h1>
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="fs-4 fw-semibold text-dark">£{{ single_product.price|floatformat:2 }}</span>
+                        <span class="ms-3 text-muted small">| {{ single_product.countReview }} Reviews</span>
+                    </div>
+
+                    <p class="text-secondary mb-4" style="line-height: 1.6;">{{ single_product.description }}</p>
+
+                    <hr class="my-4">
+
+                    <div class="mb-4">
+                        <label class="small fw-bold text-uppercase tracking-wider">Color: <span id="selected-color-text" class="text-muted fw-normal">Select One</span></label>
+                        <div class="swatch-group">
+                            {% for i in single_product.variations.all %}
+                                {% if i.variation_category == 'color' %}
+                                <label class="swatch-item" title="{{ i.variation_value }}">
+                                    <input type="radio" name="color" value="{{ i.variation_value|lower }}" required 
+                                           onchange="document.getElementById('selected-color-text').innerText = '{{ i.variation_value }}'">
+                                    <span class="swatch-visual" style="background-color: {{ i.color_code }};"></span>
+                                </label>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="small fw-bold text-uppercase mb-2 d-block">Size</label>
+                        <select name="size" class="form-select form-select-lg rounded-0 border-dark" required style="font-size: 0.9rem;">
+                            <option value="" disabled selected>Choose Size</option>
+                            {% for i in single_product.variations.all %}
+                                {% if i.variation_category == 'size' %}
+                                    <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% if single_product.stock <= 0 %}
+                        <button type="button" class="btn btn-outline-danger btn-lg w-100 rounded-0 disabled py-3 text-uppercase fw-bold">Sold Out</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-dark btn-lg w-100 rounded-0 py-3 text-uppercase fw-bold shadow-sm">Add to Bag</button>
+                    {% endif %}
+                </form>
+                
+                <div class="mt-4 pt-4 border-top">
+                    <p class="small text-muted"><i class="fas fa-truck me-2"></i> Free delivery on orders over £100</p>
+                    <p class="small text-muted"><i class="fas fa-undo me-2"></i> 30-day easy returns</p>
+                </div>
+            </main>
+        </div>
     </div>
 </section>
-
 {% endblock %}

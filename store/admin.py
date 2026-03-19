@@ -7,7 +7,6 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         'product_name',
         'price',
-        'stock',
         'category',
         'is_available',
         'modified_date',
@@ -24,7 +23,6 @@ class VariationAdmin(admin.ModelAdmin):
         'variation_category',
         'variation_value',
         'is_active',
-        'created_date',
     )
     list_filter = ('variation_category', 'is_active')
     search_fields = ('product__product_name', 'variation_value')
