@@ -3,195 +3,260 @@
 
 {% block content %}
 
-<section class="py-5" style="min-height: 90vh; background-color: #f8f9fa;">
+<section class="py-5" style="min-height: 90vh; background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
 
-        <div class="section-heading mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
             <div>
-                <p class="section-kicker">Checkout</p>
-                <h2 class="fw-bold">Complete Your Order</h2>
+                <p class="section-kicker mb-1 text-uppercase small fw-semibold text-muted">Checkout</p>
+                <h2 class="fw-bold mb-0">Complete Your Order</h2>
+            </div>
+            <div class="text-muted small">
+                {{ quantity }} item{{ quantity|pluralize }} ready for checkout
             </div>
         </div>
 
-        <form action="{% url 'place_order' %}" method="POST">
-            {% csrf_token %}
+        <div class="row g-4">
 
-            <div class="row g-4">
-
-                <aside class="col-lg-7">
-                    <div class="feature-card h-100">
-                        <div class="mb-4">
-                            <h4 class="fw-bold mb-2">Billing Details</h4>
-                            <p class="text-muted mb-0">
-                                Enter your billing and delivery information before placing your order.
-                            </p>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">First Name</label>
-                                <input type="text" name="first_name" class="form-control form-control-lg" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Last Name</label>
-                                <input type="text" name="last_name" class="form-control form-control-lg" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Email Address</label>
-                                <input type="email" name="email" class="form-control form-control-lg" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Phone Number</label>
-                                <input type="text" name="phone" class="form-control form-control-lg" required>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Address Line 1</label>
-                                <input type="text" name="address_line_1" class="form-control form-control-lg" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">Address Line 2</label>
-                                <input type="text" name="address_line_2" class="form-control form-control-lg">
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">City</label>
-                                <input type="text" name="city" class="form-control form-control-lg" required>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">State</label>
-                                <input type="text" name="state" class="form-control form-control-lg" required>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">Country</label>
-                                <input type="text" name="country" class="form-control form-control-lg" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-0">
-                            <label class="form-label fw-semibold">Order Note</label>
-                            <textarea
-                                name="order_note"
-                                rows="4"
-                                class="form-control"
-                                placeholder="Add any special instructions for your order"
-                            ></textarea>
-                        </div>
+            <aside class="col-lg-7">
+                <div class="bg-white rounded-4 shadow-sm border overflow-hidden mb-4">
+                    <div class="px-4 py-3 border-bottom">
+                        <h4 class="fw-bold mb-1">Shipping Information</h4>
+                        <p class="text-muted small mb-0">Enter your delivery details below.</p>
                     </div>
-                </aside>
 
-                <aside class="col-lg-5">
-                    <div class="product-card h-100">
-                        <div class="product-info border-bottom">
-                            <h4 class="fw-bold mb-1">Order Summary</h4>
-                            <p class="text-muted mb-0">
-                                Review your selected items before placing your order.
-                            </p>
-                        </div>
+                    <div class="p-4">
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">First Name</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Enter first name">
+                                </div>
 
-                        <div class="p-3 p-md-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Last Name</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Enter last name">
+                                </div>
 
-                            {% for cart_item in cart_items %}
-                            <div class="row align-items-center g-3 py-3 {% if not forloop.last %}border-bottom{% endif %}">
-                                <div class="col-8">
-                                    <div class="d-flex align-items-center gap-3">
-                                        {% if cart_item.product.images %}
-                                            <img
-                                                src="{{ cart_item.product.images.url }}"
-                                                alt="{{ cart_item.product.product_name }}"
-                                                style="width: 72px; height: 72px; object-fit: cover; border-radius: 14px;"
-                                            >
-                                        {% else %}
-                                            <img
-                                                src="{% static 'images/fashion-bg.jpg' %}"
-                                                alt="{{ cart_item.product.product_name }}"
-                                                style="width: 72px; height: 72px; object-fit: cover; border-radius: 14px;"
-                                            >
-                                        {% endif %}
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Email Address</label>
+                                    <input type="email" class="form-control rounded-3" placeholder="Enter email address">
+                                </div>
 
-                                        <div>
-                                            <a href="{{ cart_item.product.get_url }}" class="text-dark text-decoration-none fw-bold d-block">
-                                                {{ cart_item.product.product_name }}
-                                            </a>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Enter phone number">
+                                </div>
 
-                                            {% if cart_item.variations.all %}
-                                                <div class="text-muted small mt-1">
-                                                    {% for item in cart_item.variations.all %}
-                                                        {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}{% if not forloop.last %}<br>{% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-                                        </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Address Line 1</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Street address">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Address Line 2</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Apartment, suite, etc.">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">City</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="City">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Postcode</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Postcode">
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Country</label>
+                                    <input type="text" class="form-control rounded-3" placeholder="Country">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Order Notes</label>
+                                    <textarea class="form-control rounded-3" rows="4" placeholder="Add special delivery instructions"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-4 shadow-sm border overflow-hidden">
+                    <div class="px-4 py-3 border-bottom">
+                        <h4 class="fw-bold mb-1">Payment Method</h4>
+                        <p class="text-muted small mb-0">
+                            Card payment is available now. Additional methods may appear on Stripe’s secure payment page if eligible.
+                        </p>
+                    </div>
+
+                    <div class="p-4">
+                        <div class="border rounded-4 p-3 mb-3 bg-light">
+                            <div class="d-flex align-items-start">
+                                <input class="form-check-input me-3 mt-1" type="radio" checked disabled>
+                                <div>
+                                    <div class="fw-semibold">Credit / Debit Card</div>
+                                    <div class="small text-muted mt-1">
+                                        Pay securely with Stripe. Visa, Mastercard, Amex, and other supported cards are handled on the Stripe checkout page.
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div class="col-2 text-center">
-                                    <span class="fw-semibold">{{ cart_item.quantity }}</span>
+                        <div class="border rounded-4 p-3 mb-3 opacity-75">
+                            <div class="d-flex align-items-start">
+                                <input class="form-check-input me-3 mt-1" type="radio" disabled>
+                                <div>
+                                    <div class="fw-semibold text-muted">PayPal</div>
+                                    <div class="small text-muted mt-1">
+                                        Not selectable on this page. If enabled and eligible, it may appear automatically on Stripe checkout.
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div class="col-2 text-end">
-                                    <div class="fw-bold">£{{ cart_item.sub_total }}</div>
+                        <div class="border rounded-4 p-3 opacity-75">
+                            <div class="d-flex align-items-start">
+                                <input class="form-check-input me-3 mt-1" type="radio" disabled>
+                                <div>
+                                    <div class="fw-semibold text-muted">Cash on Delivery</div>
+                                    <div class="small text-muted mt-1">
+                                        Coming soon. This option is not connected yet.
+                                    </div>
                                 </div>
                             </div>
-                            {% endfor %}
+                        </div>
 
-                            <hr class="my-4">
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Items</span>
-                                <span class="fw-semibold">{{ cart_items|length }}</span>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal</span>
-                                <span class="fw-semibold">£{{ total }}</span>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Tax</span>
-                                <span class="fw-semibold">£{{ tax }}</span>
-                            </div>
-
-                            <div class="d-flex justify-content-between mb-4">
-                                <span class="fw-bold fs-5">Grand Total</span>
-                                <span class="fw-bold fs-5">£{{ grand_total }}</span>
-                            </div>
-
-                            <div class="text-center mb-4">
-                                <img src="{% static 'images/misc/payments.png' %}" alt="Payment Methods" style="max-height: 30px;">
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button type="submit" name="submit" class="btn btn-dark btn-lg">
-                                    Place Order
-                                </button>
-                                <a href="{% url 'cart' %}" class="btn btn-outline-dark">
-                                    Back to Cart
-                                </a>
-                            </div>
-
-                            <p class="text-muted small mt-4 mb-0">
-                                By placing your order, you confirm that your billing details are correct.
-                            </p>
+                        <div class="mt-3 small text-muted">
+                            You’ll complete payment on Stripe’s hosted checkout page after clicking the button below.
                         </div>
                     </div>
-                </aside>
+                </div>
+            </aside>
 
-            </div>
-        </form>
+            <aside class="col-lg-5">
+                <div class="bg-white rounded-4 shadow-sm border p-4 position-sticky" style="top: 110px;">
+                    <h4 class="fw-bold mb-4">Order Summary</h4>
+
+                    <div class="mb-4">
+                        {% for cart_item in cart_items %}
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                {% if cart_item.product.images %}
+                                    <img
+                                        src="{{ cart_item.product.images.url }}"
+                                        alt="{{ cart_item.product.product_name }}"
+                                        style="width: 72px; height: 82px; object-fit: cover; border-radius: 14px; border: 1px solid #eee;"
+                                    >
+                                {% else %}
+                                    <img
+                                        src="{% static 'images/fashion-bg.jpg' %}"
+                                        alt="{{ cart_item.product.product_name }}"
+                                        style="width: 72px; height: 82px; object-fit: cover; border-radius: 14px; border: 1px solid #eee;"
+                                    >
+                                {% endif %}
+
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">{{ cart_item.product.product_name }}</div>
+                                    <div class="small text-muted">Qty: {{ cart_item.quantity }}</div>
+
+                                    {% if cart_item.variations.exists %}
+                                        <div class="small text-secondary mt-1">
+                                            {% for item in cart_item.variations.all %}
+                                                <span class="me-2">
+                                                    {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}
+                                                </span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="fw-semibold">
+                                    £{{ cart_item.sub_total }}
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted mb-0">Your cart is empty.</p>
+                        {% endfor %}
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Items</span>
+                        <span class="fw-semibold">{{ quantity }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">£{{ total }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Tax</span>
+                        <span class="fw-semibold">£{{ tax }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Delivery</span>
+                        <span class="fw-semibold text-success">Free</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold fs-5">Grand Total</span>
+                        <span class="fw-bold fs-5">£{{ grand_total }}</span>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <img src="{% static 'images/misc/payments.png' %}" alt="Payment Methods" style="max-height: 30px; max-width: 100%;">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button id="checkout-button" class="btn btn-dark btn-lg rounded-pill" type="button">
+                            Continue to Secure Payment
+                        </button>
+                        <a href="{% url 'cart' %}" class="btn btn-outline-dark rounded-pill">
+                            Back to Cart
+                        </a>
+                    </div>
+
+                    <div class="mt-4 p-3 rounded-4 bg-light border">
+                        <p class="small text-muted mb-1 fw-semibold">Secure Checkout</p>
+                        <p class="small text-muted mb-0">
+                            Your order details are protected and processed securely through Stripe.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
     </div>
 </section>
+
+<script>
+document.getElementById("checkout-button").addEventListener("click", function () {
+    fetch("{% url 'create_checkout_session' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        credentials: "same-origin"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert(data.error || "Stripe checkout failed.");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Something went wrong.");
+    });
+});
+</script>
 
 {% endblock %}
