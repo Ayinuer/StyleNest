@@ -1,104 +1,112 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<section class="section-content py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+<section class="py-5" style="min-height: 85vh;">
     <div class="container">
         {% include 'includes/alerts.html' %}
 
-        <div class="row">
+        <div class="section-heading mb-4">
+            <div>
+                <p class="section-kicker">My Account</p>
+                <h2 class="fw-bold">Edit Profile</h2>
+            </div>
+        </div>
+
+        <div class="row g-4">
             {% include 'includes/dashboard_sidebar.html' %}
 
-            <main class="col-md-9">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-white border-0 py-4 px-4">
-                        <h3 class="mb-1 fw-bold">Edit Profile</h3>
+            <main class="col-lg-9">
+                <div class="feature-card">
+                    <div class="mb-4">
+                        <h4 class="fw-bold mb-2">Update Your Details</h4>
                         <p class="text-muted mb-0">
-                            Update your personal details and manage your StyleNest account information.
+                            Keep your StyleNest profile information current for a smoother shopping experience.
                         </p>
                     </div>
 
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            {% if userprofile.profile_picture %}
-                                <img 
-                                    src="{{ userprofile.profile_picture.url }}" 
-                                    alt="Profile Picture" 
-                                    width="110" 
-                                    height="110"
-                                    style="border-radius: 50%; object-fit: cover; border: 3px solid #e9ecef;"
-                                >
-                            {% else %}
-                                <img 
-                                    src="https://via.placeholder.com/110" 
-                                    alt="Default Profile Picture" 
-                                    width="110" 
-                                    height="110"
-                                    style="border-radius: 50%; object-fit: cover; border: 3px solid #e9ecef;"
-                                >
-                            {% endif %}
+                    <div class="text-center mb-4">
+                        {% if userprofile.profile_picture %}
+                            <img
+                                src="{{ userprofile.profile_picture.url }}"
+                                alt="Profile Picture"
+                                width="110"
+                                height="110"
+                                class="mx-auto d-block"
+                                style="border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;"
+                            >
+                        {% else %}
+                            <img
+                                src="{% static 'images/default-user.png' %}"
+                                alt="Default Profile Picture"
+                                width="110"
+                                height="110"
+                                class="mx-auto d-block"
+                                style="border-radius: 50%; object-fit: cover; border: 3px solid #f1f5f9;"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">First Name</label>
+                                {{ user_form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Last Name</label>
+                                {{ user_form.last_name }}
+                            </div>
                         </div>
 
-                        <form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">First Name</label>
-                                    {{ user_form.first_name }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">Last Name</label>
-                                    {{ user_form.last_name }}
-                                </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Phone Number</label>
+                                {{ user_form.phone_number }}
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">Phone Number</label>
-                                    {{ user_form.phone_number }}
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold">Profile Picture</label>
-                                    {{ profile_form.profile_picture }}
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Profile Picture</label>
+                                {{ profile_form.profile_picture }}
                             </div>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Address Line 1</label>
-                                {{ profile_form.address_line_1 }}
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Address Line 1</label>
+                            {{ profile_form.address_line_1 }}
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Address Line 2</label>
-                                {{ profile_form.address_line_2 }}
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Address Line 2</label>
+                            {{ profile_form.address_line_2 }}
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-semibold">City</label>
-                                    {{ profile_form.city }}
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label fw-semibold">State</label>
-                                    {{ profile_form.state }}
-                                </div>
-                                <div class="col-md-4 mb-4">
-                                    <label class="form-label fw-semibold">Country</label>
-                                    {{ profile_form.country }}
-                                </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">City</label>
+                                {{ profile_form.city }}
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">State</label>
+                                {{ profile_form.state }}
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <label class="form-label fw-semibold">Country</label>
+                                {{ profile_form.country }}
+                            </div>
+                        </div>
 
-                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                                <p class="text-muted small mb-0">
-                                    Keep your profile details up to date for a better shopping experience.
-                                </p>
-                                <button type="submit" class="btn btn-dark btn-lg rounded-3 px-4">
-                                    Save Changes
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <p class="text-muted small mb-0">
+                                Update your personal details and delivery information here.
+                            </p>
+                            <button type="submit" class="btn btn-dark px-4 py-2">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </main>
         </div>

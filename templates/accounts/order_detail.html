@@ -3,25 +3,31 @@
 
 {% block content %}
 
-<section class="py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+<section class="py-5" style="min-height: 90vh; background-color: #f8f9fa;">
     <div class="container">
-        <div class="card border-0 shadow-sm rounded-4 mx-auto" style="max-width: 950px;">
-            <div class="card-body p-4 p-md-5">
+        <div class="section-heading mb-4">
+            <div>
+                <p class="section-kicker">My Account</p>
+                <h2 class="fw-bold">Order Details</h2>
+            </div>
+        </div>
 
-                <!-- Header -->
-                <div class="row align-items-center mb-4">
-                    <div class="col-md-6 mb-3 mb-md-0">
+        <div class="product-card mx-auto" style="max-width: 980px;">
+            <div class="product-info p-4 p-md-5">
+
+                <div class="row align-items-center gy-4 mb-4">
+                    <div class="col-md-6">
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{% static 'images/logo.png' %}" alt="StyleNest Logo" style="max-height: 45px;">
+                            <img src="{% static 'images/logo.png' %}" alt="StyleNest Logo" style="max-height: 48px;">
                             <div>
                                 <h3 class="mb-0 fw-bold">StyleNest</h3>
-                                <small class="text-muted">Order Invoice</small>
+                                <p class="text-muted mb-0">Order Invoice</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6 text-md-end">
-                        <h5 class="fw-semibold mb-2">Invoiced To</h5>
+                        <h5 class="fw-bold mb-2">Invoiced To</h5>
                         <p class="mb-1">{{ order.full_name }}</p>
                         <p class="mb-1">{{ order.full_address }}</p>
                         <p class="mb-1">{{ order.city }}, {{ order.state }}</p>
@@ -29,37 +35,35 @@
                     </div>
                 </div>
 
-                <!-- Order Info -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
-                        <div class="p-3 bg-light rounded-4 h-100">
-                            <small class="text-muted d-block">Order Number</small>
+                        <div class="category-card h-100">
+                            <small class="text-muted d-block mb-1">Order Number</small>
                             <strong>#{{ order.order_number }}</strong>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 bg-light rounded-4 h-100">
-                            <small class="text-muted d-block">Transaction ID</small>
+                        <div class="category-card h-100">
+                            <small class="text-muted d-block mb-1">Transaction ID</small>
                             <strong>{{ order.payment.payment_id }}</strong>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 bg-light rounded-4 h-100">
-                            <small class="text-muted d-block">Order Date</small>
+                        <div class="category-card h-100">
+                            <small class="text-muted d-block mb-1">Order Date</small>
                             <strong>{{ order.created_at }}</strong>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="p-3 bg-light rounded-4 h-100">
-                            <small class="text-muted d-block">Status</small>
+                        <div class="category-card h-100">
+                            <small class="text-muted d-block mb-1">Status</small>
                             <strong>{{ order.payment.status }}</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Items Table -->
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th>Product</th>
@@ -73,43 +77,46 @@
                             <tr>
                                 <td>
                                     <strong>{{ item.product.product_name }}</strong>
-                                    <p class="text-muted small mb-0 mt-1">
+                                    <div class="text-muted small mt-1">
                                         {% if item.variations.all %}
                                             {% for i in item.variations.all %}
                                                 {{ i.variation_category|capfirst }}: {{ i.variation_value|capfirst }}<br>
                                             {% endfor %}
                                         {% endif %}
-                                    </p>
+                                    </div>
                                 </td>
                                 <td class="text-center">{{ item.quantity }}</td>
-                                <td class="text-center">${{ item.product_price }}</td>
-                                <td class="text-center">${{ item.product_price }} USD</td>
+                                <td class="text-center">£{{ item.product_price }}</td>
+                                <td class="text-center">£{{ item.product_price }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="3" class="text-end">Sub Total:</th>
-                                <th class="text-center">${{ subtotal }} USD</th>
+                                <th class="text-center">£{{ subtotal }}</th>
                             </tr>
                             <tr>
                                 <th colspan="3" class="text-end">Tax:</th>
-                                <th class="text-center">${{ order.tax }} USD</th>
+                                <th class="text-center">£{{ order.tax }}</th>
                             </tr>
                             <tr>
                                 <th colspan="3" class="text-end">Grand Total:</th>
-                                <th class="text-center fw-bold">${{ order.order_total }} USD</th>
+                                <th class="text-center fw-bold">£{{ order.order_total }}</th>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
 
-                <!-- Footer -->
-                <div class="text-center mt-4 pt-3 border-top">
-                    <h6 class="fw-bold mb-2">Thank you for shopping with StyleNest!</h6>
-                    <p class="text-muted mb-0">
+                <div class="mt-4 pt-4 border-top text-center">
+                    <h5 class="fw-bold mb-2">Thank you for shopping with StyleNest</h5>
+                    <p class="text-muted mb-3">
                         We appreciate your order and hope you enjoy your purchase.
                     </p>
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <a href="{% url 'store' %}" class="btn btn-outline-dark">Continue Shopping</a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-dark">Back to Dashboard</a>
+                    </div>
                 </div>
 
             </div>

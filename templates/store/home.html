@@ -3,19 +3,30 @@
 
 {% block content %}
 
+<!-- HERO -->
 <section class="hero-section py-5">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="glass-panel text-center text-white px-4 px-md-5 py-5">
                     <p class="section-kicker mb-3">Elevated Fashion</p>
-                    <h1 class="display-3 fw-bold mb-3">Discover Your Style with StyleNest</h1>
+
+                    <h1 class="display-3 fw-bold mb-3">
+                        Discover Your Style with StyleNest
+                    </h1>
+
                     <p class="lead mb-4">
                         Shop modern fashion, fresh arrivals, and standout looks curated for every occasion.
                     </p>
+
                     <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <a href="{% url 'store' %}" class="btn btn-light btn-lg px-4">Shop Now</a>
-                        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">Join StyleNest</a>
+                        <a href="{% url 'store' %}" class="btn btn-light btn-lg px-4">
+                            Shop Now
+                        </a>
+
+                        <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg px-4">
+                            Join StyleNest
+                        </a>
                     </div>
                 </div>
             </div>
@@ -23,8 +34,10 @@
     </div>
 </section>
 
+<!-- FEATURES -->
 <section class="py-5 bg-light">
     <div class="container">
+
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Why Choose Us</p>
@@ -33,36 +46,42 @@
         </div>
 
         <div class="row text-center g-4">
+
             <div class="col-md-4">
                 <div class="feature-card h-100">
                     <h4 class="fw-bold">New Arrivals</h4>
                     <p class="text-muted mb-0">
-                        Stay ahead with the latest fashion trends added to StyleNest.
+                        Stay ahead with the latest fashion trends added daily.
                     </p>
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="feature-card h-100">
                     <h4 class="fw-bold">Best Sellers</h4>
                     <p class="text-muted mb-0">
-                        Explore customer favorites and timeless wardrobe essentials.
+                        Discover popular styles loved by our customers.
                     </p>
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="feature-card h-100">
                     <h4 class="fw-bold">Secure Shopping</h4>
                     <p class="text-muted mb-0">
-                        Enjoy a smooth and reliable shopping experience with StyleNest.
+                        Safe payments and smooth checkout experience.
                     </p>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
 
+<!-- CATEGORIES -->
 <section class="py-5">
     <div class="container">
+
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Collections</p>
@@ -72,59 +91,93 @@
 
         <div class="row g-4">
             {% for category in links %}
+
             <div class="col-sm-6 col-lg-3">
                 <a href="{{ category.get_url }}" class="text-decoration-none d-block h-100">
-                    <div class="category-card text-center h-100">
-                        <h5 class="text-dark fw-bold mb-2">{{ category.category_name }}</h5>
+
+                    <div class="category-card h-100 text-center">
+                        <h5 class="fw-bold mb-2">{{ category.category_name }}</h5>
                         <p class="text-muted mb-0">
-                            Explore stylish picks from this collection.
+                            Explore curated fashion styles.
                         </p>
                     </div>
+
                 </a>
             </div>
+
             {% empty %}
             <div class="col-12">
-                <p class="text-muted">No categories available yet.</p>
+                <p class="text-muted text-center">
+                    No categories available yet.
+                </p>
             </div>
             {% endfor %}
         </div>
+
     </div>
 </section>
 
+<!-- PRODUCTS -->
 <section class="py-5 bg-light">
     <div class="container">
+
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Editor's Picks</p>
                 <h2 class="fw-bold">Featured Products</h2>
             </div>
-            <a href="{% url 'store' %}" class="btn btn-dark px-4">View All Products</a>
+
+            <a href="{% url 'store' %}" class="btn btn-dark px-4">
+                View All
+            </a>
         </div>
 
         <div class="row g-4">
+
             {% for product in products %}
             <div class="col-sm-6 col-lg-3">
+
                 <div class="product-card">
+
                     <a href="{{ product.get_url }}">
-                        <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                        {% if product.images %}
+                            <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                        {% else %}
+                            <img src="{% static 'images/fashion-bg.jpg' %}" alt="{{ product.product_name }}">
+                        {% endif %}
                     </a>
+
                     <div class="product-info">
+
                         <h5 class="fw-bold mb-2">
                             <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
                                 {{ product.product_name }}
                             </a>
                         </h5>
+
                         <p class="fw-semibold mb-3">£{{ product.price }}</p>
-                        <a href="{{ product.get_url }}" class="btn btn-outline-dark w-100">View Details</a>
+
+                        <a href="{{ product.get_url }}" class="btn btn-outline-dark w-100">
+                            View Details
+                        </a>
+
                     </div>
+
                 </div>
+
             </div>
             {% empty %}
+
             <div class="col-12">
-                <p class="text-muted">No products available yet.</p>
+                <p class="text-muted text-center">
+                    No products available yet.
+                </p>
             </div>
+
             {% endfor %}
+
         </div>
+
     </div>
 </section>
 

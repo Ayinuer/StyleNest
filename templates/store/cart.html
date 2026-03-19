@@ -3,159 +3,169 @@
 
 {% block content %}
 
-<section class="section-content py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+<section class="py-5" style="min-height: 90vh; background-color: #f8f9fa;">
     <div class="container">
 
         {% if not cart_items %}
-            <div class="card border-0 shadow-sm rounded-4 mx-auto text-center" style="max-width: 700px;">
-                <div class="card-body py-5 px-4">
-                    <h2 class="fw-bold mb-3">Your Shopping Cart is Empty</h2>
-                    <p class="text-muted mb-4">
-                        Looks like you haven’t added anything to your cart yet. Explore StyleNest and find something you love.
-                    </p>
-                    <a href="{% url 'store' %}" class="btn btn-dark btn-lg rounded-3 px-4">
-                        Continue Shopping
-                    </a>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="feature-card text-center py-5 px-4">
+                        <p class="section-kicker mb-2">Your Bag</p>
+                        <h2 class="fw-bold mb-3">Your Shopping Cart is Empty</h2>
+                        <p class="text-muted mb-4">
+                            You haven’t added any items yet. Explore StyleNest and find pieces you’ll love.
+                        </p>
+                        <a href="{% url 'store' %}" class="btn btn-dark btn-lg px-4">
+                            Continue Shopping
+                        </a>
+                    </div>
                 </div>
             </div>
+
         {% else %}
+
+        <div class="section-heading mb-4">
+            <div>
+                <p class="section-kicker">Shopping Bag</p>
+                <h2 class="fw-bold">Review Your Cart</h2>
+            </div>
+        </div>
 
         <div class="row g-4">
 
-            <!-- Cart Items -->
-            <aside class="col-lg-9">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-white border-0 py-4 px-4">
-                        <h3 class="mb-1 fw-bold">Shopping Cart</h3>
-                        <p class="text-muted mb-0">Review the items in your StyleNest cart before checkout.</p>
+            <aside class="col-lg-8">
+                <div class="product-card">
+                    <div class="product-info border-bottom">
+                        <h4 class="fw-bold mb-1">Shopping Cart</h4>
+                        <p class="text-muted mb-0">
+                            Review your selected items before checkout.
+                        </p>
                     </div>
 
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr class="text-uppercase small">
-                                        <th scope="col">Product</th>
-                                        <th scope="col" class="text-center" width="170">Quantity</th>
-                                        <th scope="col" class="text-center" width="160">Price</th>
-                                        <th scope="col" class="text-center" width="150">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    {% for cart_item in cart_items %}
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="me-3">
-                                                    <img 
-                                                        src="{{ cart_item.product.images.url }}" 
-                                                        alt="{{ cart_item.product.product_name }}" 
-                                                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px;"
-                                                    >
-                                                </div>
-                                                <div>
-                                                    <a href="{{ cart_item.product.get_url }}" class="text-dark text-decoration-none fw-semibold">
-                                                        {{ cart_item.product.product_name }}
-                                                    </a>
-                                                    <p class="text-muted small mb-0 mt-1">
-                                                        {% if cart_item.variations.all %}
-                                                            {% for item in cart_item.variations.all %}
-                                                                {{ item.variation_category|capfirst }} : {{ item.variation_value|capfirst }}<br>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <div class="d-inline-flex align-items-center border rounded-3 overflow-hidden">
-
-                                                <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" 
-                                                   class="btn btn-light border-0 rounded-0 px-3">
-                                                    <i class="fa fa-minus"></i>
-                                                </a>
-
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control border-0 text-center shadow-none" 
-                                                    value="{{ cart_item.quantity }}" 
-                                                    style="width: 55px;" 
-                                                    readonly
+                    <div class="p-3 p-md-4">
+                        {% for cart_item in cart_items %}
+                            <div class="row align-items-center g-3 py-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                
+                                <div class="col-md-5">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <a href="{{ cart_item.product.get_url }}" class="flex-shrink-0">
+                                            {% if cart_item.product.images %}
+                                                <img
+                                                    src="{{ cart_item.product.images.url }}"
+                                                    alt="{{ cart_item.product.product_name }}"
+                                                    style="width: 92px; height: 92px; object-fit: cover; border-radius: 16px;"
                                                 >
+                                            {% else %}
+                                                <img
+                                                    src="{% static 'images/fashion-bg.jpg' %}"
+                                                    alt="{{ cart_item.product.product_name }}"
+                                                    style="width: 92px; height: 92px; object-fit: cover; border-radius: 16px;"
+                                                >
+                                            {% endif %}
+                                        </a>
 
-                                                <form action="{% url 'add_cart' cart_item.product.id %}" method="POST" class="mb-0">
-                                                    {% csrf_token %}
-                                                    {% for item in cart_item.variations.all %}
-                                                        <input type="hidden" name="{{ item.variation_category|lower }}" value="{{ item.variation_value|capfirst }}">
-                                                    {% endfor %}
-                                                    <button class="btn btn-light border-0 rounded-0 px-3" type="submit">
-                                                        <i class="fa fa-plus"></i>
-                                                    </button>
-                                                </form>
-
-                                            </div>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <div class="fw-semibold">$ {{ cart_item.sub_total }}</div>
-                                            <small class="text-muted">$ {{ cart_item.product.price }} each</small>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" 
-                                               onclick="return confirm('Are you sure you want to remove this item?')" 
-                                               class="btn btn-outline-danger rounded-3">
-                                                Remove
+                                        <div>
+                                            <a href="{{ cart_item.product.get_url }}" class="text-dark text-decoration-none fw-bold d-block mb-1">
+                                                {{ cart_item.product.product_name }}
                                             </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
 
-                                </tbody>
-                            </table>
-                        </div>
+                                            {% if cart_item.variations.all %}
+                                                <div class="text-muted small">
+                                                    {% for item in cart_item.variations.all %}
+                                                        {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}{% if not forloop.last %}<br>{% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 text-md-center">
+                                    <div class="d-inline-flex align-items-center border rounded-pill overflow-hidden">
+                                        <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light border-0 rounded-0 px-3">
+                                            −
+                                        </a>
+
+                                        <input
+                                            type="text"
+                                            class="form-control border-0 text-center shadow-none bg-white"
+                                            value="{{ cart_item.quantity }}"
+                                            style="width: 54px;"
+                                            readonly
+                                        >
+
+                                        <form action="{% url 'add_cart' cart_item.product.id %}" method="POST" class="mb-0">
+                                            {% csrf_token %}
+                                            {% for item in cart_item.variations.all %}
+                                                <input type="hidden" name="{{ item.variation_category|lower }}" value="{{ item.variation_value|capfirst }}">
+                                            {% endfor %}
+                                            <button class="btn btn-light border-0 rounded-0 px-3" type="submit">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 text-md-center">
+                                    <div class="fw-bold">£{{ cart_item.sub_total }}</div>
+                                    <small class="text-muted">£{{ cart_item.product.price }} each</small>
+                                </div>
+
+                                <div class="col-md-2 text-md-end">
+                                    <a
+                                        href="{% url 'remove_cart_item' cart_item.product.id %}"
+                                        onclick="return confirm('Are you sure you want to remove this item?')"
+                                        class="btn btn-outline-danger btn-sm px-3"
+                                    >
+                                        Remove
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </aside>
 
-            <!-- Order Summary -->
-            <aside class="col-lg-3">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4">Order Summary</h5>
+            <aside class="col-lg-4">
+                <div class="feature-card position-sticky" style="top: 110px;">
+                    <h4 class="fw-bold mb-4">Order Summary</h4>
 
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="text-muted">Total Price</span>
-                            <span class="fw-semibold">$ {{ total }}</span>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-3">
-                            <span class="text-muted">Tax</span>
-                            <span class="fw-semibold">$ {{ tax }}</span>
-                        </div>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between mb-4">
-                            <span class="fw-bold">Grand Total</span>
-                            <span class="fw-bold fs-5">$ {{ grand_total }}</span>
-                        </div>
-
-                        <div class="text-center mb-4">
-                            <img src="{% static 'images/misc/payments.png' %}" alt="Payment Methods" style="max-height: 28px;">
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'checkout' %}" class="btn btn-dark btn-lg rounded-3">
-                                Checkout
-                            </a>
-                            <a href="{% url 'store' %}" class="btn btn-outline-secondary rounded-3">
-                                Continue Shopping
-                            </a>
-                        </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">£{{ total }}</span>
                     </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Tax</span>
+                        <span class="fw-semibold">£{{ tax }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Delivery</span>
+                        <span class="fw-semibold">Free</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold fs-5">Grand Total</span>
+                        <span class="fw-bold fs-5">£{{ grand_total }}</span>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <img src="{% static 'images/misc/payments.png' %}" alt="Payment Methods" style="max-height: 30px;">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'checkout' %}" class="btn btn-dark btn-lg">
+                            Proceed to Checkout
+                        </a>
+                        <a href="{% url 'store' %}" class="btn btn-outline-dark">
+                            Continue Shopping
+                        </a>
+                    </div>
+
+                    <p class="text-muted small mt-4 mb-0">
+                        Taxes and final charges are calculated based on your order details.
+                    </p>
                 </div>
             </aside>
 

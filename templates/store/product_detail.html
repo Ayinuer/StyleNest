@@ -2,113 +2,200 @@
 {% load static %}
 
 {% block content %}
+
 <style>
-    .swatch-group { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-    .swatch-item input { position: absolute; opacity: 0; cursor: pointer; }
+    .swatch-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .swatch-item {
+        position: relative;
+    }
+
+    .swatch-item input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
     .swatch-visual {
         display: inline-block;
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
-        border: 2px solid #e9ecef;
+        border: 2px solid #e5e7eb;
         cursor: pointer;
         transition: all 0.2s ease;
         position: relative;
     }
+
     .swatch-item input:checked ~ .swatch-visual {
-        border-color: #000;
-        transform: scale(1.15);
-        box-shadow: 0 0 8px rgba(0,0,0,0.2);
+        border-color: #111827;
+        transform: scale(1.12);
+        box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.08);
     }
+
     .swatch-item input:checked ~ .swatch-visual::after {
-        content: '✓';
+        content: "✓";
         color: #fff;
         font-size: 12px;
+        font-weight: bold;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         text-shadow: 0 0 2px #000;
     }
+
+    .product-main-image img {
+        width: 100%;
+        max-height: 720px;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    .gallery-thumb img {
+        width: 82px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .product-meta-box {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(17, 24, 39, 0.06);
+        border-radius: 22px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        padding: 28px;
+    }
 </style>
 
-<section class="section-content py-5" style="background-color: #ffffff; min-height: 100vh;">
+<section class="py-5" style="min-height: 90vh; background-color: #ffffff;">
     <div class="container">
-        <div class="row g-5">
-            <aside class="col-md-7">
-                <div class="mainImage mb-3">
+        <div class="row g-5 align-items-start">
+
+            <aside class="col-lg-7">
+                <div class="product-main-image mb-3">
                     {% if single_product.images %}
-                        <img src="{{ single_product.images.url }}" class="img-fluid rounded-0 w-100" style="max-height: 700px; object-fit: cover;">
+                        <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}">
+                    {% else %}
+                        <img src="{% static 'images/fashion-bg.jpg' %}" alt="{{ single_product.product_name }}">
                     {% endif %}
                 </div>
+
+                {% if product_gallery %}
                 <div class="d-flex gap-2 overflow-auto pb-2">
                     {% for i in product_gallery %}
-                        <img src="{{ i.image.url }}" class="rounded-0 border" style="width: 80px; height: 100px; object-fit: cover; cursor: pointer;">
+                        <div class="gallery-thumb">
+                            <img src="{{ i.image.url }}" alt="{{ single_product.product_name }}">
+                        </div>
                     {% endfor %}
                 </div>
+                {% endif %}
             </aside>
 
-            <main class="col-md-5">
-                <form action="{% url 'add_cart' single_product.id %}" method="POST">
-                    {% csrf_token %}
-                    
-                    <nav aria-label="breadcrumb" class="mb-3 small">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/" class="text-dark text-decoration-none">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ single_product.category.get_url }}" class="text-dark text-decoration-none">{{ single_product.category.category_name }}</a></li>
-                        </ol>
-                    </nav>
+            <main class="col-lg-5">
+                <div class="product-meta-box">
+                    <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                        {% csrf_token %}
 
-                    <h1 class="h2 fw-bold text-uppercase mb-1">{{ single_product.product_name }}</h1>
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="fs-4 fw-semibold text-dark">£{{ single_product.price|floatformat:2 }}</span>
-                        <span class="ms-3 text-muted small">| {{ single_product.countReview }} Reviews</span>
-                    </div>
+                        <nav aria-label="breadcrumb" class="mb-3 small">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'home' %}" class="text-dark text-decoration-none">Home</a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a href="{{ single_product.category.get_url }}" class="text-dark text-decoration-none">
+                                        {{ single_product.category.category_name }}
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    {{ single_product.product_name }}
+                                </li>
+                            </ol>
+                        </nav>
 
-                    <p class="text-secondary mb-4" style="line-height: 1.6;">{{ single_product.description }}</p>
+                        <p class="section-kicker mb-2">{{ single_product.category.category_name }}</p>
 
-                    <hr class="my-4">
+                        <h1 class="h2 fw-bold mb-2">{{ single_product.product_name }}</h1>
 
-                    <div class="mb-4">
-                        <label class="small fw-bold text-uppercase tracking-wider">Color: <span id="selected-color-text" class="text-muted fw-normal">Select One</span></label>
-                        <div class="swatch-group">
-                            {% for i in single_product.variations.all %}
-                                {% if i.variation_category == 'color' %}
-                                <label class="swatch-item" title="{{ i.variation_value }}">
-                                    <input type="radio" name="color" value="{{ i.variation_value|lower }}" required 
-                                           onchange="document.getElementById('selected-color-text').innerText = '{{ i.variation_value }}'">
-                                    <span class="swatch-visual" style="background-color: {{ i.color_code }};"></span>
-                                </label>
-                                {% endif %}
-                            {% endfor %}
+                        <div class="d-flex align-items-center flex-wrap mb-3">
+                            <span class="fs-4 fw-bold text-dark">£{{ single_product.price|floatformat:2 }}</span>
+                            <span class="ms-3 text-muted small">{{ single_product.countReview }} Reviews</span>
                         </div>
-                    </div>
 
-                    <div class="mb-5">
-                        <label class="small fw-bold text-uppercase mb-2 d-block">Size</label>
-                        <select name="size" class="form-select form-select-lg rounded-0 border-dark" required style="font-size: 0.9rem;">
-                            <option value="" disabled selected>Choose Size</option>
-                            {% for i in single_product.variations.all %}
-                                {% if i.variation_category == 'size' %}
-                                    <option value="{{ i.variation_value|lower }}">{{ i.variation_value|capfirst }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </div>
+                        <p class="text-muted mb-4" style="line-height: 1.7;">
+                            {{ single_product.description }}
+                        </p>
 
-                    {% if single_product.stock <= 0 %}
-                        <button type="button" class="btn btn-outline-danger btn-lg w-100 rounded-0 disabled py-3 text-uppercase fw-bold">Sold Out</button>
-                    {% else %}
-                        <button type="submit" class="btn btn-dark btn-lg w-100 rounded-0 py-3 text-uppercase fw-bold shadow-sm">Add to Bag</button>
-                    {% endif %}
-                </form>
-                
-                <div class="mt-4 pt-4 border-top">
-                    <p class="small text-muted"><i class="fas fa-truck me-2"></i> Free delivery on orders over £100</p>
-                    <p class="small text-muted"><i class="fas fa-undo me-2"></i> 30-day easy returns</p>
+                        <hr class="my-4">
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase">
+                                Color:
+                                <span id="selected-color-text" class="text-muted fw-normal ms-1">Select One</span>
+                            </label>
+
+                            <div class="swatch-group">
+                                {% for i in single_product.variations.all %}
+                                    {% if i.variation_category == 'color' %}
+                                        <label class="swatch-item" title="{{ i.variation_value }}">
+                                            <input
+                                                type="radio"
+                                                name="color"
+                                                value="{{ i.variation_value|lower }}"
+                                                required
+                                                onchange="document.getElementById('selected-color-text').innerText='{{ i.variation_value }}'"
+                                            >
+                                            <span class="swatch-visual" style="background-color: {{ i.color_code|default:'#cccccc' }};"></span>
+                                        </label>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase">Size</label>
+                            <select name="size" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>Choose Size</option>
+                                {% for i in single_product.variations.all %}
+                                    {% if i.variation_category == 'size' %}
+                                        <option value="{{ i.variation_value|lower }}">
+                                            {{ i.variation_value|capfirst }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {% if single_product.stock <= 0 %}
+                            <button type="button" class="btn btn-outline-danger btn-lg w-100 py-3" disabled>
+                                Sold Out
+                            </button>
+                        {% else %}
+                            <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
+                                Add to Bag
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    <div class="mt-4 pt-4 border-top">
+                        <p class="small text-muted mb-2">
+                            <i class="fas fa-truck me-2"></i> Free delivery on orders over £100
+                        </p>
+                        <p class="small text-muted mb-0">
+                            <i class="fas fa-undo me-2"></i> 30-day easy returns
+                        </p>
+                    </div>
                 </div>
             </main>
+
         </div>
     </div>
 </section>
+
 {% endblock %}

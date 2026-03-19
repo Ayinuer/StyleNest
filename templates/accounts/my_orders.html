@@ -1,64 +1,75 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<section class="section-content py-5" style="background-color: #f8f9fa; min-height: 100vh;">
+<section class="py-5" style="min-height: 85vh;">
     <div class="container">
         {% include 'includes/alerts.html' %}
 
-        <div class="row">
+        <div class="section-heading mb-4">
+            <div>
+                <p class="section-kicker">My Account</p>
+                <h2 class="fw-bold">Order History</h2>
+            </div>
+        </div>
+
+        <div class="row g-4">
             {% include 'includes/dashboard_sidebar.html' %}
 
-            <main class="col-md-9">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-white border-0 py-4 px-4">
-                        <h3 class="mb-1 fw-bold">Order History</h3>
+            <main class="col-lg-9">
+                <div class="feature-card">
+                    <div class="mb-4">
+                        <h4 class="fw-bold mb-2">Your Orders</h4>
                         <p class="text-muted mb-0">
                             View and track all your StyleNest orders in one place.
                         </p>
                     </div>
 
-                    <div class="card-body p-4">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">Order #</th>
-                                        <th scope="col">Billing Name</th>
-                                        <th scope="col">Phone</th>
-                                        <th scope="col">Order Total</th>
-                                        <th scope="col">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for order in orders %}
-                                    <tr>
-                                        <td>
-                                            <a href="{% url 'order_detail' order.order_number %}" class="fw-semibold text-dark text-decoration-none">
-                                                {{ order.order_number }}
-                                            </a>
-                                        </td>
-                                        <td>{{ order.full_name }}</td>
-                                        <td>{{ order.phone }}</td>
-                                        <td>${{ order.order_total }}</td>
-                                        <td>{{ order.created_at }}</td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
-                                            You have no orders yet.
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Order #</th>
+                                    <th scope="col">Billing Name</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Order Total</th>
+                                    <th scope="col">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'order_detail' order.order_number %}" class="fw-semibold text-dark text-decoration-none">
+                                            {{ order.order_number }}
+                                        </a>
+                                    </td>
+                                    <td>{{ order.full_name }}</td>
+                                    <td>{{ order.phone }}</td>
+                                    <td>£{{ order.order_total }}</td>
+                                    <td>{{ order.created_at }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        You have no orders yet.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-                        <div class="mt-4 p-4 bg-white rounded-4 shadow-sm">
-                            <h5 class="fw-bold mb-2">Need help with an order?</h5>
-                            <p class="text-muted mb-0">
-                                Check your order details for more information about billing, delivery, and purchased items.
-                            </p>
+                    <div class="mt-4">
+                        <div class="product-card">
+                            <div class="product-info">
+                                <h5 class="fw-bold mb-2">Need help with an order?</h5>
+                                <p class="text-muted mb-3">
+                                    Open an order to review billing details, purchased items, and delivery information.
+                                </p>
+                                <a href="{% url 'store' %}" class="btn btn-outline-dark">Continue Shopping</a>
+                            </div>
                         </div>
                     </div>
                 </div>
