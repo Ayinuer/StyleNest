@@ -37,7 +37,6 @@
 <!-- FEATURES -->
 <section class="py-5 bg-light">
     <div class="container">
-
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Why Choose Us</p>
@@ -46,7 +45,6 @@
         </div>
 
         <div class="row text-center g-4">
-
             <div class="col-md-4">
                 <div class="feature-card h-100">
                     <h4 class="fw-bold">New Arrivals</h4>
@@ -73,7 +71,6 @@
                     </p>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -81,7 +78,6 @@
 <!-- CATEGORIES -->
 <section class="py-5">
     <div class="container">
-
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Collections</p>
@@ -91,20 +87,27 @@
 
         <div class="row g-4">
             {% for category in links %}
-
             <div class="col-sm-6 col-lg-3">
                 <a href="{{ category.get_url }}" class="text-decoration-none d-block h-100">
-
                     <div class="category-card h-100 text-center">
+                        <div class="mb-3">
+                            <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                                Collection
+                            </span>
+                        </div>
+
                         <h5 class="fw-bold mb-2">{{ category.category_name }}</h5>
-                        <p class="text-muted mb-0">
+
+                        <p class="text-muted mb-3">
                             Explore curated fashion styles.
                         </p>
-                    </div>
 
+                        <span class="fw-semibold text-dark small">
+                            Shop now →
+                        </span>
+                    </div>
                 </a>
             </div>
-
             {% empty %}
             <div class="col-12">
                 <p class="text-muted text-center">
@@ -113,14 +116,12 @@
             </div>
             {% endfor %}
         </div>
-
     </div>
 </section>
 
 <!-- PRODUCTS -->
 <section class="py-5 bg-light">
     <div class="container">
-
         <div class="section-heading">
             <div>
                 <p class="section-kicker">Editor's Picks</p>
@@ -133,12 +134,9 @@
         </div>
 
         <div class="row g-4">
-
             {% for product in products %}
             <div class="col-sm-6 col-lg-3">
-
                 <div class="product-card">
-
                     <a href="{{ product.get_url }}">
                         {% if product.images %}
                             <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
@@ -148,6 +146,7 @@
                     </a>
 
                     <div class="product-info">
+                        <p class="text-muted small mb-2">{{ product.category.category_name }}</p>
 
                         <h5 class="fw-bold mb-2">
                             <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
@@ -155,29 +154,41 @@
                             </a>
                         </h5>
 
-                        <p class="fw-semibold mb-3">£{{ product.price }}</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <p class="fw-bold mb-0 fs-5">£{{ product.price }}</p>
+                            <span class="badge bg-light text-dark border">In Stock</span>
+                        </div>
 
-                        <a href="{{ product.get_url }}" class="btn btn-outline-dark w-100">
+                        <a href="{{ product.get_url }}" class="btn btn-dark w-100">
                             View Details
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
             {% empty %}
-
             <div class="col-12">
                 <p class="text-muted text-center">
                     No products available yet.
                 </p>
             </div>
-
             {% endfor %}
-
         </div>
+    </div>
+</section>
 
+<!-- SUBSCRIBE -->
+<section class="py-5">
+    <div class="container">
+        <div class="feature-card text-center py-5 px-4">
+            <p class="section-kicker mb-2">Stay Updated</p>
+            <h2 class="fw-bold mb-3">Join the StyleNest Community</h2>
+            <p class="text-muted mb-4">
+                Be the first to hear about new arrivals, exclusive offers, and curated fashion drops.
+            </p>
+            <a href="{% url 'subscribe' %}" class="btn btn-dark btn-lg px-4">
+                Subscribe Now
+            </a>
+        </div>
     </div>
 </section>
 

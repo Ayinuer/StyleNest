@@ -23,8 +23,8 @@
 
     .swatch-visual {
         display: inline-block;
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         border: 2px solid #e5e7eb;
         cursor: pointer;
@@ -58,11 +58,17 @@
     }
 
     .gallery-thumb img {
-        width: 82px;
+        width: 84px;
         height: 100px;
         object-fit: cover;
         border-radius: 14px;
         border: 1px solid #e5e7eb;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .gallery-thumb img:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
     }
 
     .product-meta-box {
@@ -71,6 +77,19 @@
         border-radius: 22px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
         padding: 28px;
+        position: sticky;
+        top: 110px;
+    }
+
+    .product-badge {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid rgba(17, 24, 39, 0.10);
+        border-radius: 999px;
+        padding: 0.35rem 0.8rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        background: #fff;
     }
 </style>
 
@@ -123,10 +142,14 @@
 
                         <h1 class="h2 fw-bold mb-2">{{ single_product.product_name }}</h1>
 
-                        <div class="d-flex align-items-center flex-wrap mb-3">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                             <span class="fs-4 fw-bold text-dark">£{{ single_product.price|floatformat:2 }}</span>
-                            <span class="ms-3 text-muted small">{{ single_product.countReview }} Reviews</span>
+                            <span class="product-badge">Premium Selection</span>
                         </div>
+
+                        <p class="text-muted small mb-4">
+                            {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
+                        </p>
 
                         <p class="text-muted mb-4" style="line-height: 1.7;">
                             {{ single_product.description }}
@@ -172,24 +195,26 @@
                             </select>
                         </div>
 
-                        {% if single_product.stock <= 0 %}
-                            <button type="button" class="btn btn-outline-danger btn-lg w-100 py-3" disabled>
-                                Sold Out
-                            </button>
-                        {% else %}
-                            <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
-                                Add to Bag
-                            </button>
-                        {% endif %}
+                        <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
+                            Add to Bag
+                        </button>
                     </form>
 
                     <div class="mt-4 pt-4 border-top">
-                        <p class="small text-muted mb-2">
-                            <i class="fas fa-truck me-2"></i> Free delivery on orders over £100
-                        </p>
-                        <p class="small text-muted mb-0">
-                            <i class="fas fa-undo me-2"></i> 30-day easy returns
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small text-muted">Free delivery on orders over £100</span>
+                            <i class="fas fa-truck text-muted"></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small text-muted">30-day easy returns</span>
+                            <i class="fas fa-undo text-muted"></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted">Secure checkout</span>
+                            <i class="fas fa-lock text-muted"></i>
+                        </div>
                     </div>
                 </div>
             </main>

@@ -16,7 +16,7 @@
             <div class="container">
                 <a class="navbar-brand fw-bold" href="{% url 'home' %}">StyleNest</a>
 
-                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -28,12 +28,16 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'store' %}">Store</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'subscribe' %}">Subscribe</a>
+                        </li>
                     </ul>
 
-                    <div class="d-flex gap-2 mt-3 mt-lg-0">
+                    <div class="d-flex gap-2 mt-3 mt-lg-0 align-items-center flex-wrap">
                         <a href="{% url 'cart' %}" class="btn btn-outline-light btn-sm nav-action-btn">
                             Cart ({{ cart_count|default:0 }})
                         </a>
+
                         <a href="/admin/" class="btn btn-light btn-sm nav-action-btn">
                             Admin
                         </a>
@@ -43,18 +47,32 @@
         </nav>
 
         <main>
+            {% include 'includes/alerts.html' %}
             {% block content %}
             {% endblock %}
         </main>
 
         <footer class="site-footer">
             <div class="container">
-                <div class="row align-items-center gy-3">
-                    <div class="col-md-6">
+                <div class="row gy-4 align-items-start">
+                    <div class="col-md-5">
                         <div class="footer-title">StyleNest</div>
-                        <p class="footer-subtitle">Modern fashion, curated collections, and a cleaner shopping experience.</p>
+                        <p class="footer-subtitle">
+                            Modern fashion, curated collections, and a cleaner shopping experience.
+                        </p>
                     </div>
-                    <div class="col-md-6 text-md-end">
+
+                    <div class="col-md-3">
+                        <h6 class="text-white fw-bold mb-3">Explore</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{% url 'home' %}" class="text-decoration-none text-white-50">Home</a>
+                            <a href="{% url 'store' %}" class="text-decoration-none text-white-50">Store</a>
+                            <a href="{% url 'subscribe' %}" class="text-decoration-none text-white-50">Subscribe</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 text-md-end">
+                        <h6 class="text-white fw-bold mb-3">Quick Access</h6>
                         <div class="d-flex justify-content-md-end gap-2 flex-wrap">
                             <a href="{% url 'home' %}" class="btn btn-outline-light btn-sm nav-action-btn">Home</a>
                             <a href="{% url 'store' %}" class="btn btn-outline-light btn-sm nav-action-btn">Store</a>

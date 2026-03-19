@@ -3,11 +3,15 @@
 
 {% block content %}
 
-<section class="py-5 bg-light border-bottom">
-    <div class="container text-center">
-        <p class="section-kicker mb-2">StyleNest Collection</p>
-        <h1 class="fw-bold mb-2">Our Store</h1>
-        <p class="text-muted mb-0">Explore the latest fashion collections at StyleNest.</p>
+<section class="store-hero py-5 border-bottom">
+    <div class="container">
+        <div class="store-hero-box text-center">
+            <p class="section-kicker mb-2">StyleNest Collection</p>
+            <h1 class="fw-bold mb-3">Curated Luxury Fashion</h1>
+            <p class="text-muted mb-0 mx-auto store-hero-text">
+                Discover refined fashion pieces, timeless accessories, and statement essentials selected for the modern wardrobe.
+            </p>
+        </div>
     </div>
 </section>
 
@@ -16,31 +20,50 @@
         <div class="row g-4">
 
             <aside class="col-lg-3">
-                <div class="feature-card">
-                    <h5 class="fw-bold mb-3">Categories</h5>
+                <div class="store-sidebar feature-card position-sticky" style="top: 110px;">
+                    <div class="sidebar-top">
+                        <div>
+                            <p class="section-kicker mb-1">Filter</p>
+                            <h5 class="fw-bold mb-0">Categories</h5>
+                        </div>
+                        <span class="sidebar-count">{{ products_count }}</span>
+                    </div>
 
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'store' %}" class="btn btn-outline-dark text-start">
-                            All Products
+                    <div class="sidebar-links d-grid gap-2 mt-4">
+                        <a href="{% url 'store' %}" class="btn btn-outline-dark text-start category-link-btn">
+                            <span>All Products</span>
+                            <span>→</span>
                         </a>
 
                         {% for category in links %}
-                            <a href="{{ category.get_url }}" class="btn btn-outline-dark text-start">
-                                {{ category.category_name }}
-                            </a>
+                        <a href="{{ category.get_url }}" class="btn btn-outline-dark text-start category-link-btn">
+                            <span>{{ category.category_name }}</span>
+                            <span>→</span>
+                        </a>
                         {% endfor %}
+                    </div>
+
+                    <div class="sidebar-subscribe mt-4">
+                        <div class="mini-banner">
+                            <p class="small text-muted mb-2">Need style inspiration?</p>
+                            <h6 class="fw-bold mb-3">Get alerts for new arrivals and exclusive offers.</h6>
+                            <a href="{% url 'subscribe' %}" class="btn btn-dark w-100">
+                                Join Updates
+                            </a>
+                        </div>
                     </div>
                 </div>
             </aside>
 
             <div class="col-lg-9">
-                <div class="section-heading">
+                <div class="section-heading store-heading">
                     <div>
                         <p class="section-kicker">Browse</p>
-                        <h2 class="fw-bold mb-0">Products</h2>
+                        <h2 class="fw-bold mb-1">Featured Products</h2>
+                        <p class="text-muted mb-0">A premium selection from the StyleNest store.</p>
                     </div>
 
-                    <div class="text-muted fw-semibold">
+                    <div class="store-results-pill">
                         {{ products_count }} item{{ products_count|pluralize }} found
                     </div>
                 </div>
@@ -48,43 +71,68 @@
                 <div class="row g-4">
                     {% if products %}
                         {% for product in products %}
-                        <div class="col-md-6 col-lg-4">
-                            <div class="product-card">
-                                <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
-                                    {% if product.images %}
-                                        <img
-                                            src="{{ product.images.url }}"
-                                            alt="{{ product.product_name }}"
-                                        >
-                                    {% else %}
-                                        <img
-                                            src="{% static 'images/fashion-bg.jpg' %}"
-                                            alt="{{ product.product_name }}"
-                                        >
-                                    {% endif %}
-                                </a>
+                        <div class="col-md-6 col-xl-4">
+                            <div class="product-card h-100 luxury-product-card">
+
+                                <div class="product-image-box">
+                                    <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
+                                        <div class="image-wrap">
+                                            {% if product.images %}
+                                                <img src="{{ product.images.url }}" alt="{{ product.product_name }}">
+                                            {% else %}
+                                                <img src="{% static 'images/fashion-bg.jpg' %}" alt="{{ product.product_name }}">
+                                            {% endif %}
+                                        </div>
+                                    </a>
+
+                                    <div class="product-floating-badge">
+                                        {{ product.category.category_name }}
+                                    </div>
+                                </div>
 
                                 <div class="product-info">
-                                    <h5 class="fw-bold mb-2">
-                                        <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
-                                            {{ product.product_name }}
+                                    <div class="product-content-top">
+                                        <p class="text-muted small mb-2 text-uppercase product-mini-label">
+                                            Designer Selection
+                                        </p>
+
+                                        <h5 class="fw-bold mb-2 product-title">
+                                            <a href="{{ product.get_url }}" class="text-decoration-none text-dark">
+                                                {{ product.product_name }}
+                                            </a>
+                                        </h5>
+
+                                        <div class="product-price-row">
+                                            <p class="fw-bold mb-0 fs-5">£{{ product.price|floatformat:2 }}</p>
+                                            <span class="badge product-stock-badge">In Stock</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="product-bottom-bar mt-4">
+                                        <a href="{{ product.get_url }}" class="product-bar-btn product-view-btn">
+                                            <i class="fa fa-eye me-2"></i> View
                                         </a>
-                                    </h5>
 
-                                    <p class="fw-semibold mb-3">£{{ product.price|floatformat:2 }}</p>
-
-                                    <a href="{{ product.get_url }}" class="btn btn-dark w-100">
-                                        View Details
-                                    </a>
+                                        <a href="{% url 'add_cart' product.id %}" class="product-bar-btn product-cart-btn">
+                                            <i class="fa fa-shopping-cart me-2"></i> Add
+                                        </a>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         {% endfor %}
                     {% else %}
                         <div class="col-12">
-                            <div class="feature-card text-center py-5">
+                            <div class="feature-card text-center py-5 empty-state-box">
+                                <div class="empty-icon mb-3">
+                                    <i class="fa fa-box-open"></i>
+                                </div>
                                 <h4 class="fw-bold mb-2">No products found</h4>
-                                <p class="text-muted mb-0">Please add products from the admin panel.</p>
+                                <p class="text-muted mb-3">Please add products from the admin panel.</p>
+                                <a href="{% url 'home' %}" class="btn btn-outline-dark px-4">
+                                    Back to Home
+                                </a>
                             </div>
                         </div>
                     {% endif %}
