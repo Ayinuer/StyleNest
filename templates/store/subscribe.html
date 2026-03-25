@@ -8,43 +8,64 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
 
-                <div class="feature-card p-4 p-md-5">
+                <div class="feature-card p-4 p-md-5 bg-white rounded-4 shadow-sm border-0">
 
                     <div class="text-center mb-4">
-                        <p class="section-kicker mb-2">Stay Updated</p>
-                        <h2 class="fw-bold mb-2">Subscribe to Fashion Updates</h2>
+                        <p class="section-kicker mb-2 text-uppercase small fw-semibold text-muted">
+                            Shop Updates
+                        </p>
+
+                        <h2 class="fw-bold mb-2">
+                            Subscribe to {{ shop.shop_name }} Updates
+                        </h2>
+
                         <p class="text-muted mb-0">
-                            Get exclusive offers, new arrivals, and fashion trends directly to you.
+                            Get exclusive offers, announcements, and seasonal updates directly from {{ shop.shop_name }}.
                         </p>
                     </div>
+
+                    {% include 'includes/alerts.html' %}
 
                     <form method="POST">
                         {% csrf_token %}
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone Number</label>
-                            <input 
-                                type="text" 
-                                name="phone_number" 
-                                class="form-control form-control-lg" 
-                                placeholder="Enter your phone number"
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control form-control-lg"
+                                placeholder="Enter your email"
                                 required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Phone Number <span class="text-muted">(optional)</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="phone_number"
+                                class="form-control form-control-lg"
+                                placeholder="Enter your phone number"
                             >
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">Birth Month</label>
-                            <input 
-                                type="text" 
-                                name="birth_month" 
-                                class="form-control form-control-lg" 
+                            <label class="form-label fw-semibold">
+                                Birth Month <span class="text-muted">(optional)</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="birth_month"
+                                class="form-control form-control-lg"
                                 placeholder="e.g. January"
-                                required
                             >
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-dark btn-lg">
+                            <button type="submit" class="btn btn-dark btn-lg rounded-pill">
                                 Subscribe Now
                             </button>
                         </div>

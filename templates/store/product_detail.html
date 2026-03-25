@@ -71,14 +71,22 @@
         box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10);
     }
 
-    .product-meta-box {
+    .product-meta-box,
+    .review-box {
         background: rgba(255, 255, 255, 0.92);
         border: 1px solid rgba(17, 24, 39, 0.06);
         border-radius: 22px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+
+    .product-meta-box {
         padding: 28px;
         position: sticky;
         top: 110px;
+    }
+
+    .review-box {
+        padding: 28px;
     }
 
     .product-badge {
@@ -91,6 +99,92 @@
         font-weight: 600;
         background: #fff;
     }
+
+    .rating-stars {
+        color: #d4af37;
+        font-size: 1rem;
+        letter-spacing: 2px;
+    }
+
+    .review-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 16px;
+        background: #fff;
+    }
+
+    .star-rating {
+        display: inline-block;
+        direction: rtl;
+        font-size: 32px;
+        line-height: 1;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        color: #d6d6d6;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        padding: 0 2px;
+    }
+
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #d4af37;
+    }
+
+    .star-rating input:checked ~ label {
+        color: #d4af37;
+    }
+
+    .review-textarea {
+        border-radius: 16px;
+        min-height: 140px;
+    }
+
+    .wishlist-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    padding: 12px;
+    border-radius: 999px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+
+    color: #111827;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: all 0.3s ease;
+}
+
+/* gold heart */
+.wishlist-btn::before {
+    content: "♡";
+    color: #d4af37;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+/* hover effect (premium) */
+.wishlist-btn:hover {
+    background: #fff7e6;   /* soft gold background */
+    border-color: #d4af37;
+    color: #111827;
+}
+
+/* heart becomes filled */
+.wishlist-btn:hover::before {
+    content: "♥";
+    color: #d4af37;
+}
 </style>
 
 <section class="py-5" style="min-height: 90vh; background-color: #ffffff;">
@@ -138,7 +232,7 @@
                             </ol>
                         </nav>
 
-                        <p class="section-kicker mb-2">{{ single_product.category.category_name }}</p>
+                        <p class="mb-2 text-uppercase small text-muted">{{ single_product.category.category_name }}</p>
 
                         <h1 class="h2 fw-bold mb-2">{{ single_product.product_name }}</h1>
 
@@ -147,8 +241,9 @@
                             <span class="product-badge">Premium Selection</span>
                         </div>
 
-                        <p class="text-muted small mb-4">
-                            {{ single_product.countReview }} review{{ single_product.countReview|pluralize }}
+                        <p class="text-muted mb-3">
+                            ⭐ {{ average_review.average|default:0|floatformat:1 }} / 5
+                            · {{ review_count.count }} review{{ review_count.count|pluralize }}
                         </p>
 
                         <p class="text-muted mb-4" style="line-height: 1.7;">
@@ -200,6 +295,11 @@
                         </button>
                     </form>
 
+                   <a href="{% url 'add_to_wishlist' single_product.id %}" 
+   class="wishlist-btn w-100 mt-3">
+    ♡ Save to Wishlist
+</a>
+
                     <div class="mt-4 pt-4 border-top">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="small text-muted">Free delivery on orders over £100</span>
@@ -218,6 +318,90 @@
                     </div>
                 </div>
             </main>
+
+        </div>
+    </div>
+</section>
+
+<section class="pb-5" style="background-color: #ffffff;">
+    <div class="container">
+        <div class="row g-4">
+
+            <div class="col-lg-6">
+                <div class="review-box">
+                    <h3 class="h4 fw-bold mb-3">Leave a Review</h3>
+
+                    {% include 'includes/alerts.html' %}
+
+                    {% if user.is_authenticated %}
+                    <form action="{% url 'submit_review' single_product.id %}" method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <div class="star-rating">
+                                <input type="radio" name="rating" value="5" id="star5">
+                                <label for="star5">★</label>
+
+                                <input type="radio" name="rating" value="4" id="star4">
+                                <label for="star4">★</label>
+
+                                <input type="radio" name="rating" value="3" id="star3">
+                                <label for="star3">★</label>
+
+                                <input type="radio" name="rating" value="2" id="star2">
+                                <label for="star2">★</label>
+
+                                <input type="radio" name="rating" value="1" id="star1" required>
+                                <label for="star1">★</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea
+                                name="review"
+                                class="form-control review-textarea"
+                                rows="4"
+                                placeholder="Write your experience..."
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark px-4 rounded-pill">
+                            Submit
+                        </button>
+                    </form>
+                    {% else %}
+                    <p class="mb-0">
+                        Please <a href="{% url 'login' %}" class="text-dark fw-semibold">login</a> to review
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="review-box">
+                    <h3 class="h4 fw-bold mb-3">Customer Reviews</h3>
+
+                    {% for review in reviews %}
+                        <div class="review-item">
+                            <div class="rating-stars mb-2">
+                                {% if review.rating >= 1 %}★{% endif %}
+                                {% if review.rating >= 2 %}★{% endif %}
+                                {% if review.rating >= 3 %}★{% endif %}
+                                {% if review.rating >= 4 %}★{% endif %}
+                                {% if review.rating >= 5 %}★{% endif %}
+                            </div>
+
+                            <p class="mb-2 text-muted">{{ review.review }}</p>
+
+                            <small class="text-muted">
+                                By {{ review.user.username }} · {{ review.created_at|date:"d M Y" }}
+                            </small>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted mb-0">No reviews yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
 
         </div>
     </div>

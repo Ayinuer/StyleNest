@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="py-5" style="min-height: 80vh; background-color: #ffffff;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <p class="text-uppercase small text-muted mb-1">Your saved items</p>
+                <h1 class="h2 fw-bold mb-0">My Wishlist</h1>
+            </div>
+            <span class="badge rounded-pill text-dark border px-3 py-2">
+                {{ wishlist_items|length }} item{{ wishlist_items|length|pluralize }}
+            </span>
+        </div>
+
+        <div class="row g-4">
+            {% for item in wishlist_items %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                        {% if item.product.images %}
+                            <img src="{{ item.product.images.url }}" class="card-img-top" alt="{{ item.product.product_name }}" style="height: 320px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/fashion-bg.jpg' %}" class="card-img-top" alt="{{ item.product.product_name }}" style="height: 320px; object-fit: cover;">
+                        {% endif %}
+
+                        <div class="card-body p-4">
+                            <p class="text-uppercase small text-muted mb-2">{{ item.product.category.category_name }}</p>
+                            <h5 class="fw-bold mb-2">{{ item.product.product_name }}</h5>
+                            <p class="fw-semibold mb-3">£{{ item.product.price|floatformat:2 }}</p>
+
+                            <a href="{{ item.product.get_url }}" class="btn btn-dark w-100 rounded-pill">
+                                View Product
+                            </a>
+
+                            <a href="{% url 'remove_from_wishlist' item.product.id %}" class="btn btn-outline-danger w-100 rounded-pill mt-2">
+                                Remove
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+                        <h3 class="h4 mb-3">Your wishlist is empty</h3>
+                        <p class="text-muted mb-4">Save your favourite products here and come back to them anytime.</p>
+                        <a href="{% url 'store' %}" class="btn btn-dark rounded-pill px-4">
+                            Browse Store
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

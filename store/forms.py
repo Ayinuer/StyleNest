@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product
+from .models import Product, ReviewRating
 
 
 class ProductForm(forms.ModelForm):
@@ -11,7 +11,6 @@ class ProductForm(forms.ModelForm):
             'description',
             'price',
             'images',
-            'stock',
             'is_available',
             'category',
         ]
@@ -34,9 +33,34 @@ class ProductForm(forms.ModelForm):
 
         self.fields['images'].widget.attrs['class'] = 'form-control'
 
-        self.fields['stock'].widget.attrs['class'] = 'form-control'
-        self.fields['stock'].widget.attrs['placeholder'] = 'Enter Stock Quantity'
-
         self.fields['is_available'].widget.attrs['class'] = 'form-check-input'
 
         self.fields['category'].widget.attrs['class'] = 'form-control'
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = ReviewRating
+        fields = ['subject', 'review', 'rating']
+        widgets = {
+            'subject': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter review title',
+            }),
+            'review': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your review here',
+                'rows': 4,
+            }),
+            'rating': forms.Select(
+                choices=[
+                    ('', 'Select Rating'),
+                    (1, '1 Star'),
+                    (2, '2 Stars'),
+                    (3, '3 Stars'),
+                    (4, '4 Stars'),
+                    (5, '5 Stars'),
+                ],
+                attrs={'class': 'form-control'}
+            ),
+        }

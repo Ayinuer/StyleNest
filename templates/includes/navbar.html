@@ -74,6 +74,15 @@
                             </div>
                         {% endif %}
 
+                        <a href="{% url 'wishlist' %}" class="position-relative text-dark text-decoration-none">
+                            <div class="icon icon-sm rounded-circle border d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+                                <i class="fa fa-heart"></i>
+                            </div>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                {{ wishlist_count|default:0 }}
+                            </span>
+                        </a>
+
                         <a href="/cart/" class="position-relative text-dark text-decoration-none">
                             <div class="icon icon-sm rounded-circle border d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                                 <i class="fa fa-shopping-cart"></i>

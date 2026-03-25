@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Product, Variation, ProductAttribute, Subscriber
+from .models import (
+    Product,
+    Variation,
+    ProductAttribute,
+    Subscriber,
+    ReviewRating,   # ⭐ NEW IMPORT
+    Wishlist,
+)
 
 
 # PRODUCT ADMIN
@@ -31,7 +38,7 @@ class VariationAdmin(admin.ModelAdmin):
     search_fields = ('product__product_name', 'variation_value')
 
 
-# ⭐ SKU / STOCK ADMIN
+# SKU / STOCK ADMIN
 @admin.register(ProductAttribute)
 class ProductAttributeAdmin(admin.ModelAdmin):
     list_display = (
@@ -40,10 +47,10 @@ class ProductAttributeAdmin(admin.ModelAdmin):
         'stock',
     )
     search_fields = ('product__product_name', 'sku')
-    filter_horizontal = ('variations',)   # 👈 very important for usability
+    filter_horizontal = ('variations',)
 
 
-# ⭐ SUBSCRIBER ADMIN (YOUR ASSIGNMENT)
+# SUBSCRIBER ADMIN
 @admin.register(Subscriber)
 class SubscriberAdmin(admin.ModelAdmin):
     list_display = (
@@ -53,3 +60,36 @@ class SubscriberAdmin(admin.ModelAdmin):
     )
     search_fields = ('phone_number', 'birth_month')
     list_filter = ('birth_month',)
+
+
+# ⭐ REVIEW & RATING ADMIN (NEW)
+@admin.register(ReviewRating)
+class ReviewRatingAdmin(admin.ModelAdmin):
+    list_display = (
+        'subject',
+        'product',
+        'user',
+        'rating',
+        'status',
+        'created_at',
+    )
+    list_filter = (
+        'status',
+        'rating',
+        'created_at',
+    )
+    search_fields = (
+        'subject',
+        'review',
+        'user__username',
+        'product__product_name',
+    )
+    readonly_fields = ('ip', 'created_at', 'updated_at')
+    
+
+# WISHLIST ADMIN
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    
+    list_display = ('user', 'product', 'created_at')
+    search_fields = ('user__username', 'product__product_name')
