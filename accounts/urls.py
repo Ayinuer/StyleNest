@@ -3,12 +3,16 @@ from . import views
 
 urlpatterns = [
     # Auth
-    path('login/', views.login, name='login'),
+    path('login/', views.login_view, name='login'),
     path('register/', views.register, name='register'),
-    path('logout/', views.logout, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
 
     # Dashboard
     path('dashboard/', views.dashboard, name='dashboard'),
+
+    # 🔥 Subscribers (IMPORTANT - you forgot this)
+    path('subscribers/', views.subscribers_list, name='subscribers_list'),
+    path('subscribers/toggle/<int:subscriber_id>/', views.subscriber_toggle_status, name='subscriber_toggle_status'),
 
     # Profile
     path('edit-profile/', views.edit_profile, name='edit_profile'),

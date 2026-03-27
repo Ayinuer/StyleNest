@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subscriber',
             name='shop',
-            field=models.ForeignKey(default='test@example.com', on_delete=django.db.models.deletion.CASCADE, related_name='subscribers', to='accounts.shopownerprofile'),
+            field=models.ForeignKey(default= 1, on_delete=django.db.models.deletion.CASCADE, related_name='subscribers', to='accounts.shopownerprofile'),
             preserve_default=False,
         ),
         migrations.AlterField(

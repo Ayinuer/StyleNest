@@ -132,24 +132,66 @@ def subscribe(request, qr_token):
     shop = get_object_or_404(ShopOwnerProfile, qr_token=qr_token)
 
     if request.method == 'POST':
-        email = request.POST.get('email')
-        phone_number = request.POST.get('phone_number')
-        birth_month = request.POST.get('birth_month')
+        email = request.POST.get('email', '').strip()
+        phone_number = request.POST.get('phone_number', '').strip()
+        birth_month = request.POST.get('birth_month', '').strip()
 
-        if email:
-            Subscriber.objects.create(
-                shop=shop,
-                email=email,
-                phone_number=phone_number,
-                birth_month=birth_month
-            )
-            messages.success(request, 'You subscribed successfully!')
-            return redirect('subscription_success')
+        if not phone_number:
+            messages.error(request, 'Phone number is required.')
+            return render(request, 'store/subscribe.html', {'shop': shop})
+
+        subscriber, created = Subscriber.objects.get_or_create(
+            shop=shop,
+            phone_number=phone_number,
+            defaults={
+                'email': email if email else None,
+                'birth_month': birth_month if birth_month else None,
+                'is_active': True,
+            }
+        )
+
+        if not created:
+            subscriber.email = email if email else subscriber.email
+            subscriber.birth_month = birth_month if birth_month else subscriber.birth_month
+            subscriber.is_active = True
+            subscriber.save()
+
+        messages.success(request, 'You subscribed successfully!')
+        return redirect('subscription_success')
 
     context = {
         'shop': shop,
     }
     return render(request, 'store/subscribe.html', context)
+
+
+def unsubscribe(request, qr_token):
+    shop = get_object_or_404(ShopOwnerProfile, qr_token=qr_token)
+
+    if request.method == 'POST':
+        phone_number = request.POST.get('phone_number', '').strip()
+
+        if not phone_number:
+            messages.error(request, 'Phone number is required.')
+            return render(request, 'store/unsubscribe.html', {'shop': shop})
+
+        try:
+            subscriber = Subscriber.objects.get(
+                shop=shop,
+                phone_number=phone_number
+            )
+            subscriber.is_active = False
+            subscriber.save()
+            messages.success(request, 'You have been unsubscribed successfully.')
+            return redirect('home')
+
+        except Subscriber.DoesNotExist:
+            messages.error(request, 'No subscriber was found with that phone number.')
+
+    context = {
+        'shop': shop,
+    }
+    return render(request, 'store/unsubscribe.html', context)
 
 
 def subscription_success(request):

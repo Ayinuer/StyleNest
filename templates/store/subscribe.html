@@ -30,25 +30,25 @@
                         {% csrf_token %}
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Email Address</label>
+                            <label class="form-label fw-semibold">
+                                Email Address <span class="text-muted">(optional)</span>
+                            </label>
                             <input
                                 type="email"
                                 name="email"
                                 class="form-control form-control-lg"
                                 placeholder="Enter your email"
-                                required
                             >
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Phone Number <span class="text-muted">(optional)</span>
-                            </label>
+                            <label class="form-label fw-semibold">Phone Number</label>
                             <input
                                 type="text"
                                 name="phone_number"
                                 class="form-control form-control-lg"
                                 placeholder="Enter your phone number"
+                                required
                             >
                         </div>
 
@@ -70,6 +70,10 @@
                             </button>
                         </div>
                     </form>
+
+                    <a href="{% url 'unsubscribe' shop.qr_token %}" class="text-danger d-block mt-3 text-center fw-semibold">
+                        Unsubscribe instead
+                    </a>
 
                     <p class="text-muted small text-center mt-4 mb-0">
                         We respect your privacy. No spam, unsubscribe anytime.

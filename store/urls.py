@@ -18,7 +18,8 @@ urlpatterns = [
     path('wishlist/add/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
     path('wishlist/remove/<int:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
 
-    path('subscribe/', views.subscribe_landing, name='subscribe_landing'),
-    path('subscribe/<str:qr_token>/', views.subscribe, name='subscribe'),
     path('subscribe/success/', views.subscription_success, name='subscription_success'),
+    path('unsubscribe/<str:qr_token>/', views.unsubscribe, name='unsubscribe'),
+    path('subscribe/<str:qr_token>/', views.subscribe, name='subscribe'),
+    path('subscribe/', views.subscribe_landing, name='subscribe_landing'),
 ]
