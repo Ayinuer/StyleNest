@@ -30,38 +30,13 @@
                         {% csrf_token %}
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Email Address <span class="text-muted">(optional)</span>
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                class="form-control form-control-lg"
-                                placeholder="Enter your email"
-                            >
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label fw-semibold">Phone Number</label>
-                            <input
-                                type="text"
-                                name="phone_number"
-                                class="form-control form-control-lg"
-                                placeholder="Enter your phone number"
-                                required
-                            >
+                            {{ form.phone_number }}
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                Birth Month <span class="text-muted">(optional)</span>
-                            </label>
-                            <input
-                                type="text"
-                                name="birth_month"
-                                class="form-control form-control-lg"
-                                placeholder="e.g. January"
-                            >
+                            <label class="form-label fw-semibold">Birth Month</label>
+                            {{ form.birth_month }}
                         </div>
 
                         <div class="d-grid">

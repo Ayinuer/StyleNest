@@ -4,9 +4,10 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 from .models import ShopOwnerProfile
-from store.models import Subscriber
+from subscribers.models import Subscriber
 from campaigns.models import Campaign
 
 
@@ -14,7 +15,6 @@ def get_shop_profile(user):
     return ShopOwnerProfile.objects.filter(user=user).first()
 
 
-# AUTH
 def login_view(request):
     if request.method == 'POST':
         email_or_username = request.POST.get('email', '').strip()
@@ -89,7 +89,6 @@ def logout_view(request):
     return redirect('login')
 
 
-# DASHBOARD
 @login_required
 def dashboard(request):
     shop_profile = get_shop_profile(request.user)
@@ -98,26 +97,25 @@ def dashboard(request):
         messages.error(request, 'No shop profile found.')
         return redirect('login')
 
-    total_subscribers = Subscriber.objects.filter(shop=shop_profile).count()
-    active_subscribers = Subscriber.objects.filter(shop=shop_profile, is_active=True).count()
-    inactive_subscribers = Subscriber.objects.filter(shop=shop_profile, is_active=False).count()
-
+    subscribers = Subscriber.objects.filter(shop=shop_profile)
     campaigns = Campaign.objects.filter(shop=shop_profile)
+
+    total_subscribers = subscribers.count()
+    active_subscribers = subscribers.filter(is_active=True).count()
+    inactive_subscribers = subscribers.filter(is_active=False).count()
     total_campaigns = campaigns.count()
     total_delivered = sum(c.delivered_count for c in campaigns)
 
-    context = {
+    return render(request, 'accounts/dashboard.html', {
         'shop_profile': shop_profile,
         'total_subscribers': total_subscribers,
         'active_subscribers': active_subscribers,
         'inactive_subscribers': inactive_subscribers,
         'total_campaigns': total_campaigns,
         'total_delivered': total_delivered,
-    }
-    return render(request, 'accounts/dashboard.html', context)
+    })
 
 
-# PROFILE
 @login_required
 def edit_profile(request):
     shop_profile = get_shop_profile(request.user)
@@ -146,7 +144,6 @@ def change_password(request):
     return render(request, 'accounts/change_password.html')
 
 
-# CAMPAIGNS
 @login_required
 def compose_message(request):
     shop_profile = get_shop_profile(request.user)
@@ -159,7 +156,11 @@ def compose_message(request):
         template_type = request.POST.get('template_type', 'custom').strip()
         message_type = request.POST.get('message_type', 'sms').strip()
         message_body = request.POST.get('message_body', '').strip()
-        scheduled_for = request.POST.get('scheduled_for', '').strip()
+        scheduled_for_raw = request.POST.get('scheduled_for', '').strip()
+
+        if not title:
+            messages.error(request, 'Campaign title is required.')
+            return redirect('compose_message')
 
         if template_type == 'new_arrivals' and not message_body:
             message_body = 'New arrivals are now available. Visit our shop for the latest styles.'
@@ -168,10 +169,7 @@ def compose_message(request):
         elif template_type == 'birthday_offer' and not message_body:
             message_body = 'Celebrate with us. Enjoy a special birthday offer this month.'
 
-        active_subscribers = Subscriber.objects.filter(
-            shop=shop_profile,
-            is_active=True
-        )
+        active_subscribers = Subscriber.objects.filter(shop=shop_profile, is_active=True)
         total_recipients = active_subscribers.count()
 
         campaign = Campaign.objects.create(
@@ -183,11 +181,19 @@ def compose_message(request):
             total_recipients=total_recipients,
         )
 
-        if scheduled_for:
-            campaign.status = 'scheduled'
-            campaign.scheduled_for = scheduled_for
-            campaign.save()
-            messages.success(request, 'Campaign scheduled successfully.')
+        if scheduled_for_raw:
+            scheduled_for = parse_datetime(scheduled_for_raw)
+
+            if scheduled_for is not None:
+                if timezone.is_naive(scheduled_for):
+                    scheduled_for = timezone.make_aware(scheduled_for, timezone.get_current_timezone())
+
+                campaign.status = 'scheduled'
+                campaign.scheduled_for = scheduled_for
+                campaign.save()
+                messages.success(request, 'Campaign scheduled successfully.')
+            else:
+                messages.warning(request, 'Invalid date/time format. Campaign saved as draft.')
         else:
             campaign.status = 'sent'
             campaign.sent_at = timezone.now()
@@ -218,7 +224,6 @@ def message_history(request):
     })
 
 
-# PASSWORD RESET PLACEHOLDERS
 def forgotPassword(request):
     return render(request, 'accounts/forgotPassword.html')
 
@@ -227,7 +232,6 @@ def resetPassword(request):
     return render(request, 'accounts/resetPassword.html')
 
 
-# ORDERS PLACEHOLDERS
 @login_required
 def my_orders(request):
     return render(request, 'accounts/my_orders.html')

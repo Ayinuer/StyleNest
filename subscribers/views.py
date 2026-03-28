@@ -1,13 +1,12 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from shops.models import ShopOwner
+from accounts.models import ShopOwnerProfile
 from .models import Subscriber
 from .forms import SubscriberForm, UnsubscribeForm
 
 
-def subscribe_view(request, shop_id):
-    shop = get_object_or_404(ShopOwner, id=shop_id)
+def subscribe_view(request, qr_token):
+    shop = get_object_or_404(ShopOwnerProfile, qr_token=qr_token)
 
     if request.method == 'POST':
         form = SubscriberForm(request.POST)
@@ -15,7 +14,6 @@ def subscribe_view(request, shop_id):
             raw_phone = form.cleaned_data['phone_number']
             birth_month = form.cleaned_data['birth_month']
 
-            # prevent duplicate active subscriptions for same shop + phone
             existing_subscribers = Subscriber.objects.filter(shop=shop)
 
             for subscriber in existing_subscribers:
@@ -27,7 +25,7 @@ def subscribe_view(request, shop_id):
                         subscriber.birth_month = birth_month
                         subscriber.save()
                         messages.success(request, 'Your subscription has been reactivated.')
-                    return redirect('subscribe_view', shop_id=shop.id)
+                    return redirect('subscribe', qr_token=shop.qr_token)
 
             subscriber = form.save(commit=False)
             subscriber.shop = shop
@@ -36,18 +34,18 @@ def subscribe_view(request, shop_id):
 
             messages.success(request, 'Subscription successful.')
             return redirect('subscribe_success')
+
     else:
         form = SubscriberForm()
 
-    context = {
+    return render(request, 'subscribers/subscribe.html', {
         'shop': shop,
         'form': form,
-    }
-    return render(request, 'subscribers/subscribe.html', context)
+    })
 
 
-def unsubscribe_view(request, shop_id):
-    shop = get_object_or_404(ShopOwner, id=shop_id)
+def unsubscribe_view(request, qr_token):
+    shop = get_object_or_404(ShopOwnerProfile, qr_token=qr_token)
 
     if request.method == 'POST':
         form = UnsubscribeForm(request.POST)
@@ -67,11 +65,10 @@ def unsubscribe_view(request, shop_id):
     else:
         form = UnsubscribeForm()
 
-    context = {
+    return render(request, 'subscribers/unsubscribe.html', {
         'shop': shop,
         'form': form,
-    }
-    return render(request, 'subscribers/unsubscribe.html', context)
+    })
 
 
 def subscribe_success(request):

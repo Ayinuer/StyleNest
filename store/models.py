@@ -4,7 +4,6 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 
 from category.models import Category
-from accounts.models import ShopOwnerProfile
 
 
 class Product(models.Model):
@@ -30,15 +29,14 @@ class Product(models.Model):
         })
 
     def average_review(self):
-        reviews = ReviewRating.objects.filter(product=self, status=True)
+        reviews = self.reviews.filter(status=True)
         if reviews.exists():
             total = sum(review.rating for review in reviews)
             return round(total / reviews.count(), 1)
         return 0
 
     def count_review(self):
-        reviews = ReviewRating.objects.filter(product=self, status=True)
-        return reviews.count()
+        return self.reviews.filter(status=True).count()
 
     def __str__(self):
         return self.product_name
@@ -66,33 +64,13 @@ class Variation(models.Model):
 
 
 class ProductAttribute(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    variations = models.ManyToManyField(Variation)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='attributes')
+    variations = models.ManyToManyField(Variation, blank=True)
     sku = models.CharField(max_length=50, unique=True)
     stock = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.product.product_name} [{self.sku}]"
-
-
-class Subscriber(models.Model):
-    shop = models.ForeignKey(
-        ShopOwnerProfile,
-        on_delete=models.CASCADE,
-        related_name='subscribers'
-    )
-    email = models.EmailField(blank=True, null=True)
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
-    birth_month = models.CharField(max_length=20, blank=True, null=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        if self.email:
-            return f"{self.shop.shop_name} - {self.email}"
-        if self.phone_number:
-            return f"{self.shop.shop_name} - {self.phone_number}"
-        return f"{self.shop.shop_name} - Subscriber"
 
 
 class ReviewRating(models.Model):

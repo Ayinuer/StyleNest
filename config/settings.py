@@ -155,9 +155,7 @@ USE_TZ = True
 # STATIC FILES
 # --------------------------------------------------
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -179,7 +177,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # LOGIN / LOGOUT REDIRECTS
 # --------------------------------------------------
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'shop_dashboard'
+LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
 
@@ -194,7 +192,7 @@ STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 # --------------------------------------------------
 # DIRECT MARKETING PLATFORM SETTINGS
 # --------------------------------------------------
-FERNET_KEY = os.environ.get('FERNET_KEY', '')
+FERNET_KEY = os.environ.get('FERNET_KEY', 'q6kIs4O0rpEJwiV--DzKH5XPRolNSYIjjkSTBTXGtY0=')
 
 DEFAULT_MESSAGE_CREDITS = 100
 BASIC_PLAN_PRICE_ID = os.environ.get('BASIC_PLAN_PRICE_ID', '')
@@ -227,7 +225,6 @@ CELERY_TIMEZONE = 'Europe/London'
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

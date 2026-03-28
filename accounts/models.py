@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 import secrets
 import qrcode
 from io import BytesIO
@@ -28,10 +29,13 @@ class ShopOwnerProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def get_subscribe_url(self):
-        return f"/subscribe/{self.qr_token}/"
+        return f"/subscribers/subscribe/{self.qr_token}/"
+
+    def get_unsubscribe_url(self):
+        return f"/subscribers/unsubscribe/{self.qr_token}/"
 
     def generate_qr_code(self):
-        subscribe_url = f"http://127.0.0.1:8000{self.get_subscribe_url()}"
+        subscribe_url = f"{settings.SITE_URL}{self.get_subscribe_url()}"
 
         qr = qrcode.make(subscribe_url)
         buffer = BytesIO()
@@ -41,6 +45,9 @@ class ShopOwnerProfile(models.Model):
         self.qr_code.save(filename, File(buffer), save=False)
 
     def save(self, *args, **kwargs):
+        if not self.qr_token:
+            self.qr_token = generate_qr_token()
+
         super().save(*args, **kwargs)
 
         if not self.qr_code:

@@ -3,13 +3,11 @@ from .models import (
     Product,
     Variation,
     ProductAttribute,
-    Subscriber,
-    ReviewRating,   # ⭐ NEW IMPORT
+    ReviewRating,
     Wishlist,
 )
 
 
-# PRODUCT ADMIN
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = (
@@ -24,7 +22,6 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('product_name', 'description')
 
 
-# VARIATION ADMIN
 @admin.register(Variation)
 class VariationAdmin(admin.ModelAdmin):
     list_display = (
@@ -38,7 +35,6 @@ class VariationAdmin(admin.ModelAdmin):
     search_fields = ('product__product_name', 'variation_value')
 
 
-# SKU / STOCK ADMIN
 @admin.register(ProductAttribute)
 class ProductAttributeAdmin(admin.ModelAdmin):
     list_display = (
@@ -50,19 +46,6 @@ class ProductAttributeAdmin(admin.ModelAdmin):
     filter_horizontal = ('variations',)
 
 
-# SUBSCRIBER ADMIN
-@admin.register(Subscriber)
-class SubscriberAdmin(admin.ModelAdmin):
-    list_display = (
-        'phone_number',
-        'birth_month',
-        'created_at',
-    )
-    search_fields = ('phone_number', 'birth_month')
-    list_filter = ('birth_month',)
-
-
-# ⭐ REVIEW & RATING ADMIN (NEW)
 @admin.register(ReviewRating)
 class ReviewRatingAdmin(admin.ModelAdmin):
     list_display = (
@@ -85,11 +68,9 @@ class ReviewRatingAdmin(admin.ModelAdmin):
         'product__product_name',
     )
     readonly_fields = ('ip', 'created_at', 'updated_at')
-    
 
-# WISHLIST ADMIN
+
 @admin.register(Wishlist)
 class WishlistAdmin(admin.ModelAdmin):
-    
     list_display = ('user', 'product', 'created_at')
     search_fields = ('user__username', 'product__product_name')

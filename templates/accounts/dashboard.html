@@ -6,7 +6,6 @@
 <section class="py-5" style="min-height: 85vh; background-color: #f8f9fa;">
     <div class="container">
 
-        <!-- Page Header -->
         <div class="section-heading mb-4">
             <p class="section-kicker">Shop Owner Dashboard</p>
             <h2 class="fw-bold mb-1">Welcome back, {{ shop_profile.shop_name }}</h2>
@@ -16,15 +15,11 @@
         </div>
 
         <div class="row g-4">
-
-            <!-- Sidebar -->
             {% include 'includes/dashboard_sidebar.html' %}
 
-            <!-- Main Content -->
             <main class="col-lg-9">
                 <div class="feature-card p-4 p-md-5 bg-white rounded-4 shadow-sm border-0">
 
-                    <!-- Top Action Bar -->
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                         <div>
                             <h4 class="fw-bold mb-1">{{ shop_profile.shop_name }}</h4>
@@ -41,7 +36,6 @@
                         </div>
                     </div>
 
-                    <!-- Statistics -->
                     <div class="row g-4 mb-4">
 
                         <div class="col-md-4">
@@ -86,10 +80,8 @@
 
                     </div>
 
-                    <!-- Profile + QR -->
                     <div class="row g-4 mb-4">
 
-                        <!-- Shop Profile -->
                         <div class="col-md-6">
                             <div class="product-card p-4 h-100">
                                 <div class="product-info">
@@ -120,7 +112,6 @@
                             </div>
                         </div>
 
-                        <!-- QR Code -->
                         <div class="col-md-6">
                             <div class="product-card p-4 h-100 text-center">
                                 <div class="product-info">
@@ -150,7 +141,6 @@
 
                     </div>
 
-                    <!-- Subscription Link -->
                     <div class="product-card p-4 mb-4">
                         <div class="product-info">
                             <h5 class="fw-bold mb-3">Subscription Access Link</h5>
@@ -160,7 +150,7 @@
                             </p>
 
                             <div class="p-3 border rounded bg-light mb-3" style="word-break: break-all;">
-                                {{ request.scheme }}://{{ request.get_host }}/subscribe/{{ shop_profile.qr_token }}/
+                                {{ request.scheme }}://{{ request.get_host }}/subscribers/subscribe/{{ shop_profile.qr_token }}/
                             </div>
 
                             <div class="d-flex gap-2 flex-wrap">
@@ -174,28 +164,20 @@
                         </div>
                     </div>
 
-                    <!-- Marketing Overview -->
                     <div class="product-card p-4">
                         <div class="product-info">
                             <h5 class="fw-bold mb-2">Marketing Overview</h5>
 
                             <p class="text-muted mb-3">
-                                Your shop now includes a QR-based subscription system, campaign management tools, message history tracking, and basic delivery metrics. This provides a strong foundation for customer engagement, promotional activity, and future platform expansion.
+                                Your shop now includes a QR-based subscription system, campaign management tools, message history tracking, and basic delivery metrics.
                             </p>
 
                             <div class="d-flex gap-2 flex-wrap mt-3">
-                                <a href="{% url 'compose_message' %}" class="btn btn-dark">
-                                    Compose Message
-                                </a>
-                                <a href="{% url 'message_history' %}" class="btn btn-outline-dark">
-                                    View Message History
-                                </a>
-                                <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark">
-                                    Edit Profile
-                                </a>
-                                <a href="{% url 'logout' %}" class="btn btn-outline-dark">
-                                    Logout
-                                </a>
+                                <a href="{% url 'compose_message' %}" class="btn btn-dark">Compose Message</a>
+                                <a href="{% url 'message_history' %}" class="btn btn-outline-dark">View Message History</a>
+                                <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark">Edit Profile</a>
+                                <a href="{% url 'billing_page' %}" class="btn btn-outline-dark">Billing</a>
+                                <a href="{% url 'logout' %}" class="btn btn-outline-dark">Logout</a>
                             </div>
                         </div>
                     </div>
