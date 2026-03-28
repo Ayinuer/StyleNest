@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+
 from accounts.models import ShopOwnerProfile
 from .models import Subscriber
 from .forms import SubscriberForm, UnsubscribeForm
@@ -34,14 +35,14 @@ def subscribe_view(request, qr_token):
 
             messages.success(request, 'Subscription successful.')
             return redirect('subscribe_success')
-
     else:
         form = SubscriberForm()
 
-    return render(request, 'subscribers/subscribe.html', {
+    context = {
         'shop': shop,
         'form': form,
-    })
+    }
+    return render(request, 'subscribers/subscribe.html', context)
 
 
 def unsubscribe_view(request, qr_token):
@@ -65,10 +66,11 @@ def unsubscribe_view(request, qr_token):
     else:
         form = UnsubscribeForm()
 
-    return render(request, 'subscribers/unsubscribe.html', {
+    context = {
         'shop': shop,
         'form': form,
-    })
+    }
+    return render(request, 'subscribers/unsubscribe.html', context)
 
 
 def subscribe_success(request):

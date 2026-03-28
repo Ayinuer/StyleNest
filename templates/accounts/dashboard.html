@@ -1,191 +1,97 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block content %}
 
-<section class="py-5" style="min-height: 85vh; background-color: #f8f9fa;">
+<section class="py-5" style="min-height: 90vh; background-color: #f8f9fa;">
     <div class="container">
 
-        <div class="section-heading mb-4">
-            <p class="section-kicker">Shop Owner Dashboard</p>
-            <h2 class="fw-bold mb-1">Welcome back, {{ shop_profile.shop_name }}</h2>
-            <p class="text-muted mb-0">
-                Monitor subscribers, manage campaigns, share your QR code, and oversee shop communications from one central dashboard.
-            </p>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <p class="text-uppercase small fw-semibold text-muted mb-1">Shop Owner Dashboard</p>
+                <h2 class="fw-bold mb-1">Welcome back, {{ shop.shop_name }}</h2>
+                <p class="text-muted mb-0">Manage subscribers, campaigns, QR access, and billing in one place.</p>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'compose_message' %}" class="btn btn-dark rounded-pill px-4">Compose Campaign</a>
+                <a href="{% url 'billing_page' %}" class="btn btn-outline-dark rounded-pill px-4">Billing</a>
+            </div>
         </div>
 
-        <div class="row g-4">
-            {% include 'includes/dashboard_sidebar.html' %}
-
-            <main class="col-lg-9">
-                <div class="feature-card p-4 p-md-5 bg-white rounded-4 shadow-sm border-0">
-
-                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                        <div>
-                            <h4 class="fw-bold mb-1">{{ shop_profile.shop_name }}</h4>
-                            <p class="text-muted mb-0">Business overview and marketing control panel</p>
-                        </div>
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <a href="{% url 'compose_message' %}" class="btn btn-dark rounded-pill px-4">
-                                Compose Campaign
-                            </a>
-                            <a href="{% url 'subscribe' shop_profile.qr_token %}" class="btn btn-outline-dark rounded-pill px-4">
-                                Open Subscription Page
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-4">
-
-                        <div class="col-md-4">
-                            <div class="category-card text-center p-4 h-100">
-                                <h6 class="text-muted fw-semibold mb-2">Total Subscribers</h6>
-                                <h2 class="fw-bold mb-2">{{ total_subscribers }}</h2>
-                                <p class="text-muted mb-0">All customers currently linked to your shop.</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="category-card text-center p-4 h-100">
-                                <h6 class="text-muted fw-semibold mb-2">Active Subscribers</h6>
-                                <h2 class="fw-bold mb-2 text-success">{{ active_subscribers }}</h2>
-                                <p class="text-muted mb-0">Subscribers currently opted in to receive updates.</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="category-card text-center p-4 h-100">
-                                <h6 class="text-muted fw-semibold mb-2">Inactive Subscribers</h6>
-                                <h2 class="fw-bold mb-2 text-danger">{{ inactive_subscribers }}</h2>
-                                <p class="text-muted mb-0">Subscribers who have chosen to opt out.</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="category-card text-center p-4 h-100">
-                                <h6 class="text-muted fw-semibold mb-2">Total Campaigns</h6>
-                                <h2 class="fw-bold mb-2">{{ total_campaigns }}</h2>
-                                <p class="text-muted mb-0">Marketing campaigns created and stored in your account.</p>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="category-card text-center p-4 h-100">
-                                <h6 class="text-muted fw-semibold mb-2">Delivered Messages</h6>
-                                <h2 class="fw-bold mb-2">{{ total_delivered }}</h2>
-                                <p class="text-muted mb-0">Total successfully delivered messages across campaigns.</p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row g-4 mb-4">
-
-                        <div class="col-md-6">
-                            <div class="product-card p-4 h-100">
-                                <div class="product-info">
-                                    <h5 class="fw-bold mb-3">Shop Profile</h5>
-
-                                    <p class="mb-2"><strong>Shop Name:</strong> {{ shop_profile.shop_name }}</p>
-                                    <p class="mb-2"><strong>Owner Username:</strong> {{ shop_profile.user.username }}</p>
-                                    <p class="mb-2"><strong>Email:</strong> {{ shop_profile.user.email|default:"Not set" }}</p>
-
-                                    <p class="mb-2">
-                                        <strong>Phone:</strong>
-                                        {% if shop_profile.phone %}
-                                            {{ shop_profile.phone }}
-                                        {% else %}
-                                            <span class="text-muted">Not set</span>
-                                        {% endif %}
-                                    </p>
-
-                                    <p class="mb-0">
-                                        <strong>Account Status:</strong>
-                                        {% if shop_profile.is_active %}
-                                            <span class="text-success fw-semibold">Active</span>
-                                        {% else %}
-                                            <span class="text-danger fw-semibold">Inactive</span>
-                                        {% endif %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="product-card p-4 h-100 text-center">
-                                <div class="product-info">
-                                    <h5 class="fw-bold mb-3">Subscription QR Code</h5>
-
-                                    {% if shop_profile.qr_code %}
-                                        <img
-                                            src="{{ shop_profile.qr_code.url }}"
-                                            alt="QR Code for {{ shop_profile.shop_name }}"
-                                            class="img-fluid mb-3"
-                                            style="max-width: 170px;"
-                                        >
-
-                                        <p class="text-muted small mb-3">
-                                            Customers can scan this QR code to access your subscription page instantly.
-                                        </p>
-
-                                        <a href="{{ shop_profile.qr_code.url }}" download class="btn btn-outline-dark btn-sm">
-                                            Download QR Code
-                                        </a>
-                                    {% else %}
-                                        <p class="text-muted mb-0">QR code has not been generated yet.</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="product-card p-4 mb-4">
-                        <div class="product-info">
-                            <h5 class="fw-bold mb-3">Subscription Access Link</h5>
-
-                            <p class="text-muted mb-3">
-                                Share this direct link with customers so they can subscribe securely to your shop updates.
-                            </p>
-
-                            <div class="p-3 border rounded bg-light mb-3" style="word-break: break-all;">
-                                {{ request.scheme }}://{{ request.get_host }}/subscribers/subscribe/{{ shop_profile.qr_token }}/
-                            </div>
-
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a href="{% url 'subscribe' shop_profile.qr_token %}" class="btn btn-dark">
-                                    Open Subscription Page
-                                </a>
-                                <a href="{% url 'unsubscribe' shop_profile.qr_token %}" class="btn btn-outline-danger">
-                                    Open Unsubscribe Page
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="product-card p-4">
-                        <div class="product-info">
-                            <h5 class="fw-bold mb-2">Marketing Overview</h5>
-
-                            <p class="text-muted mb-3">
-                                Your shop now includes a QR-based subscription system, campaign management tools, message history tracking, and basic delivery metrics.
-                            </p>
-
-                            <div class="d-flex gap-2 flex-wrap mt-3">
-                                <a href="{% url 'compose_message' %}" class="btn btn-dark">Compose Message</a>
-                                <a href="{% url 'message_history' %}" class="btn btn-outline-dark">View Message History</a>
-                                <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark">Edit Profile</a>
-                                <a href="{% url 'billing_page' %}" class="btn btn-outline-dark">Billing</a>
-                                <a href="{% url 'logout' %}" class="btn btn-outline-dark">Logout</a>
-                            </div>
-                        </div>
-                    </div>
-
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100">
+                    <h6 class="text-muted fw-semibold">Total Subscribers</h6>
+                    <h2 class="fw-bold">{{ total_subscribers }}</h2>
                 </div>
-            </main>
+            </div>
 
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100">
+                    <h6 class="text-muted fw-semibold">Active Subscribers</h6>
+                    <h2 class="fw-bold text-success">{{ active_subscribers }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100">
+                    <h6 class="text-muted fw-semibold">Inactive Subscribers</h6>
+                    <h2 class="fw-bold text-danger">{{ inactive_subscribers }}</h2>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100">
+                    <h6 class="text-muted fw-semibold">Campaigns</h6>
+                    <h2 class="fw-bold">{{ total_campaigns }}</h2>
+                </div>
+            </div>
         </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h5 class="fw-bold mb-3">Shop Profile</h5>
+                    <p class="mb-2"><strong>Shop Name:</strong> {{ shop.shop_name }}</p>
+                    <p class="mb-2"><strong>Username:</strong> {{ shop.user.username }}</p>
+                    <p class="mb-2"><strong>Email:</strong> {{ shop.user.email|default:"Not set" }}</p>
+                    <p class="mb-0"><strong>Status:</strong>
+                        {% if shop.is_active %}
+                            <span class="text-success fw-semibold">Active</span>
+                        {% else %}
+                            <span class="text-danger fw-semibold">Inactive</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 text-center h-100">
+                    <h5 class="fw-bold mb-3">Subscription QR Code</h5>
+
+                    {% if shop.qr_code %}
+                        <img src="{{ shop.qr_code.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 180px;">
+                        <a href="{{ shop.qr_code.url }}" download class="btn btn-outline-dark rounded-pill px-4">Download QR</a>
+                    {% else %}
+                        <p class="text-muted">QR code not generated yet.</p>
+                    {% endif %}
+
+                    <div class="mt-3 p-3 bg-light rounded-3 small text-break">
+                        {{ request.scheme }}://{{ request.get_host }}{{ shop.get_subscribe_url }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 p-4">
+            <h5 class="fw-bold mb-3">Quick Actions</h5>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'compose_message' %}" class="btn btn-dark rounded-pill px-4">Compose Campaign</a>
+                <a href="{% url 'message_history' %}" class="btn btn-outline-dark rounded-pill px-4">Message History</a>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-dark rounded-pill px-4">Edit Profile</a>
+                <a href="{% url 'billing_page' %}" class="btn btn-outline-dark rounded-pill px-4">Manage Billing</a>
+            </div>
+        </div>
+
     </div>
 </section>
 

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="py-5" style="min-height: 80vh; background-color: #f8f9fa;">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 text-center bg-white">
+
+                    <p class="text-uppercase small fw-semibold text-muted mb-2">
+                        Subscription Plan
+                    </p>
+
+                    <h2 class="fw-bold mb-2">Upgrade Your Plan</h2>
+
+                    <p class="text-muted mb-4">
+                        Unlock messaging features, customer engagement tools, and premium analytics.
+                    </p>
+
+                    <!-- PRICE -->
+                    <div class="mb-4">
+                        <h1 class="fw-bold mb-0">£10</h1>
+                        <span class="text-muted">per month</span>
+                    </div>
+
+                    <!-- FEATURES -->
+                    <ul class="list-unstyled text-start mb-4">
+                        <li class="mb-2">✔ Send SMS & WhatsApp campaigns</li>
+                        <li class="mb-2">✔ Unlimited subscribers</li>
+                        <li class="mb-2">✔ QR code subscriptions</li>
+                        <li class="mb-2">✔ Privacy-first encrypted data</li>
+                        <li class="mb-2">✔ Message scheduling</li>
+                    </ul>
+
+                    <!-- BUTTON -->
+                    <button id="checkout-button"
+                            class="btn btn-dark rounded-pill px-4 py-2 w-100">
+                        Pay £10 Monthly
+                    </button>
+
+                    <!-- SECURITY NOTE -->
+                    <p class="small text-muted mt-3 mb-0">
+                        Secure payment powered by Stripe
+                    </p>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- STRIPE -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+    const stripe = Stripe("{{ stripe_public_key }}");
+
+    document.getElementById("checkout-button").addEventListener("click", function () {
+        fetch("{% url 'create_checkout_session' %}")
+        .then(response => response.json())
+        .then(session => {
+            return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .catch(error => {
+            console.error("Stripe Error:", error);
+        });
+    });
+</script>
+
+{% endblock %}
