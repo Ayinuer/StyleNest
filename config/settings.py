@@ -14,8 +14,6 @@ load_dotenv()
 # BASE DIRECTORY
 # --------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Templates directory
 TEMPLATES_DIR = BASE_DIR / 'templates'
 
 
@@ -23,7 +21,6 @@ TEMPLATES_DIR = BASE_DIR / 'templates'
 # SECURITY
 # --------------------------------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key')
-
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
@@ -31,10 +28,11 @@ ALLOWED_HOSTS = os.environ.get(
     '127.0.0.1,localhost,.herokuapp.com'
 ).split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-]
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'http://127.0.0.1:8000,http://localhost:8000'
+).split(',')
+
 
 # --------------------------------------------------
 # APPLICATIONS
@@ -61,11 +59,10 @@ INSTALLED_APPS = [
     'campaigns',
     'billing',
 
-    # Optional third-party packages you may add later
-    # 'crispy_forms',
-    # 'crispy_bootstrap5',
+    # Third-party apps
+    'django_celery_beat',
 ]
-    
+
 
 # --------------------------------------------------
 # MIDDLEWARE
@@ -73,7 +70,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -163,8 +159,6 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# WhiteNoise storage for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
@@ -200,26 +194,31 @@ STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 # --------------------------------------------------
 # DIRECT MARKETING PLATFORM SETTINGS
 # --------------------------------------------------
+FERNET_KEY = os.environ.get('FERNET_KEY', '')
 
-# Encryption key for subscriber phone number encryption
-# Generate this later and place it in your .env file
-ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY', '')
-
-# Platform settings
 DEFAULT_MESSAGE_CREDITS = 100
 BASIC_PLAN_PRICE_ID = os.environ.get('BASIC_PLAN_PRICE_ID', '')
 PRO_PLAN_PRICE_ID = os.environ.get('PRO_PLAN_PRICE_ID', '')
 
-# Base URL for QR code links and Stripe success/cancel redirects
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
 
 
 # --------------------------------------------------
 # EMAIL SETTINGS
 # --------------------------------------------------
-# For development only. Emails print in terminal.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@stylenest.com')
+
+
+# --------------------------------------------------
+# CELERY
+# --------------------------------------------------
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://127.0.0.1:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/London'
 
 
 # --------------------------------------------------

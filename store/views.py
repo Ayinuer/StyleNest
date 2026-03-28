@@ -156,7 +156,7 @@ def subscribe(request, qr_token):
             subscriber.is_active = True
             subscriber.save()
 
-        messages.success(request, 'You subscribed successfully!')
+        request.session['last_subscribed_shop_id'] = shop.id
         return redirect('subscription_success')
 
     context = {
@@ -195,4 +195,13 @@ def unsubscribe(request, qr_token):
 
 
 def subscription_success(request):
-    return render(request, 'store/subscription_success.html')
+    shop_id = request.session.get('last_subscribed_shop_id')
+    shop = None
+
+    if shop_id:
+        shop = ShopOwnerProfile.objects.filter(id=shop_id).first()
+
+    context = {
+        'shop': shop,
+    }
+    return render(request, 'store/subscription_success.html', context)
